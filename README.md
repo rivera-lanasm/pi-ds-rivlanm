@@ -109,4 +109,7 @@ After you review the diff:
 - `sessions/`, `models-store.json`, `npm/`,
   `subagent-manager/.import-offered` — state that pi regenerates.
 - `bin/rg` — a binary. Install ripgrep through your package manager.
-- `settings.json` holds no secrets, so git tracks it.
+- `settings.json` holds no secrets, so git tracks it. It carries no
+  provider or model: `sync.sh pull` filters `defaultProvider` and
+  `defaultModel` out, so a local provider choice (together, LiteLLM, or
+  another) stays local.

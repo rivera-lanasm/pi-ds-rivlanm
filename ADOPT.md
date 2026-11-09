@@ -59,8 +59,10 @@ the repo. On overlap, the repo's pinned entry wins. This preserves the
 user's own extensions next to the pinned pi-subagent-manager. Their
 installed files are still on disk; the settings entry is what pi loads.
 
-`settings.json` is the one tracked file a user is expected to modify. The
-change stays local, or the user commits it in their own fork.
+The repo's `settings.json` carries no provider or model. When the user
+changes provider later — together, LiteLLM, or another — `sync.sh pull`
+filters `defaultProvider` and `defaultModel` out, so the choice stays
+local and never enters git.
 
 ## 5. Install the pinned extension
 
@@ -73,8 +75,8 @@ pi install npm:pi-subagent-manager@0.25.0
 
 `pi update --extensions` is not enough here: it updates installed packages
 but skips a pinned package that is not installed yet. The pin survives
-later `pi update --extensions` runs. The repo's custom coder agent is
-already in place from step 3.
+later `pi update --extensions` runs. The repo's custom agents (coder and
+architect) are already in place from step 3.
 
 ## 6. Verify
 

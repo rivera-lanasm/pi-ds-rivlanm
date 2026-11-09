@@ -43,8 +43,14 @@ item() {
         if diff -rq "$live" "$repo_path" >/dev/null 2>&1; then
             return 0
         fi
-        rm -rf "$repo_path"
-        cp -R "$live" "$repo_path"
+        if [ "$rel" = "settings.json" ] && command -v jq >/dev/null 2>&1; then
+            # Provider and model are user preferences. They stay local.
+            jq 'del(.defaultProvider, .defaultModel)' "$live" > "$repo_path"
+        else
+            [ "$rel" = "settings.json" ] && echo "note: jq missing; $rel pulled unfiltered" >&2
+            rm -rf "$repo_path"
+            cp -R "$live" "$repo_path"
+        fi
         echo "pulled $rel"
     fi
 }

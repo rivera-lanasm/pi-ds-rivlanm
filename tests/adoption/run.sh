@@ -96,8 +96,15 @@ if (!(s.packages || []).includes("npm:user-own-extension"))
     throw new Error("user extension dropped");
 ' "$PI_AGENT/settings.json" || fail "settings.json wrong"
 ok "settings.json keeps user settings, user extensions, and the repo pin"
+node -e '
+const s = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+if ("defaultProvider" in s || "defaultModel" in s)
+    throw new Error("repo settings.json carries a provider or model");
+' "$REPO/settings.json" || fail "repo settings.json not provider-neutral"
+ok "repo settings.json carries no provider or model"
 [ -f "$PI_AGENT/subagent-manager/agents/coder.md" ] || fail "coder.md missing"
-ok "custom coder agent deployed"
+[ -f "$PI_AGENT/subagent-manager/agents/architect.md" ] || fail "architect.md missing"
+ok "custom agents (coder, architect) deployed"
 [ -d "$PI_AGENT/npm/node_modules/pi-subagent-manager" ] \
     || fail "pi-subagent-manager not installed"
 ok "pi-subagent-manager installed at the pinned version"
