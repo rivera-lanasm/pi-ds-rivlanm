@@ -1,0 +1,189 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# dependencies = []
+# ///
+"""Close out one Taskwarrior ticket with its conclusion document.
+
+Boundary script: checks the ticket and the document, then annotates the
+ticket with the document path. It does not mark the ticket done. It does not
+navigate the pi session. Both steps stay with the user.
+
+Usage:
+    tw-close <uuid> [document]
+
+The document defaults to conclusions/<uuid-prefix>.md in the current
+directory. <uuid-prefix> is the first 8 characters of the UUID.
+"""
+
+import json
+import re
+import subprocess
+import sys
+from collections.abc import Sequence
+from pathlib import Path
+from typing import TypedDict
+from uuid import UUID
+
+# Every call: never prompt for confirmation, never print taskrc chatter.
+TASK = ("task", "rc.confirmation=off", "rc.verbose=nothing")
+
+# Keep in sync with tw-check.
+REQUIRED_SECTIONS = (
+    "Goal",
+    "Progress",
+    "Done",
+    "Decisions",
+    "Artifacts",
+    "Open items",
+)
+
+
+class AnnotationRecord(TypedDict, total=False):
+    """The fields of a Taskwarrior annotation that this script reads."""
+
+    description: str
+
+
+class TaskRecord(TypedDict, total=False):
+    """The fields of a Taskwarrior export row that this script reads."""
+
+    status: str
+    annotations: list[AnnotationRecord]
+
+
+def run_task(arguments: Sequence[str]) -> str:
+    """Run the `task` CLI and return its stdout.
+
+    Raises subprocess.CalledProcessError when `task` exits non-zero.
+    """
+    result = subprocess.run(
+        [*TASK, *arguments],
+        capture_output=True,
+        text=True,
+        check=True,
+        stdin=subprocess.DEVNULL,
+    )
+    return result.stdout
+
+
+def parse_uuid(argument: str) -> UUID:
+    """Return the UUID for an argument.
+
+    Raises ValueError when the argument is not a UUID.
+    """
+    try:
+        return UUID(argument)
+    except ValueError:
+        raise ValueError(f"uuid: not a UUID: {argument}") from None
+
+
+def pending_ticket(uuid: UUID) -> TaskRecord:
+    """Return the pending task for a UUID.
+
+    Raises ValueError when the task does not exist or is not pending.
+    """
+    rows: list[TaskRecord] = json.loads(run_task([f"uuid:{uuid}", "export"]))
+    if not rows:
+        raise ValueError(f"uuid: no task {uuid}")
+    status = rows[0].get("status", "unknown")
+    if status != "pending":
+        raise ValueError(f"uuid: task {uuid} is {status}, not pending")
+    return rows[0]
+
+
+def document_text(document: Path) -> str:
+    """Return the text of a complete document.
+
+    Raises ValueError with one line per problem when the file is missing or
+    misses a required section.
+    """
+    if not document.is_file():
+        raise ValueError(f"document: no file {document}")
+    text = document.read_text()
+    errors = [f"document: missing section '{name}'" for name in missing_sections(text)]
+    if errors:
+        raise ValueError("\n".join(errors))
+    return text
+
+
+def missing_sections(text: str) -> list[str]:
+    """Return the required sections that the document text does not contain."""
+    headings = set(re.findall(r"^## (.+)$", text, flags=re.MULTILINE))
+    return [name for name in REQUIRED_SECTIONS if name not in headings]
+
+
+def status_value(text: str) -> str | None:
+    """Return the Status field of the document, or None when it has none."""
+    match = re.search(r"^Status: *(.*)$", text, flags=re.MULTILINE)
+    return match.group(1).strip() if match else None
+
+
+def annotate_ticket(uuid: UUID, ticket: TaskRecord, annotation: str) -> str:
+    """Annotate the ticket and return the outcome line for the user.
+
+    Runs `task annotate` only when the ticket does not carry the annotation,
+    so a second run changes nothing. Raises subprocess.CalledProcessError
+    when `task` exits non-zero.
+    """
+    descriptions = (
+        annotation_record.get("description")
+        for annotation_record in ticket.get("annotations", [])
+    )
+    if annotation in descriptions:
+        return f"already annotated: {annotation}"
+    run_task([str(uuid), "annotate", "--", annotation])
+    return f"annotated: {annotation}"
+
+
+def next_steps(uuid: UUID) -> str:
+    """Return the manual steps that close out the session for the user."""
+    return "\n".join(
+        [
+            "next steps for the user:",
+            "1. If the ticket used a context fork, open /tree. Go to the entry",
+            "   before the first message of this ticket and continue from there.",
+            "   When Pi offers a summary of the branch, decline it.",
+            f"2. When you are ready, mark the ticket done: task {str(uuid)[:8]} done",
+        ]
+    )
+
+
+def main(argv: Sequence[str]) -> int:
+    """Check the ticket and the document, then annotate the ticket."""
+    if len(argv) not in (1, 2):
+        print("usage: tw-close <uuid> [document]", file=sys.stderr)
+        return 2
+    try:
+        uuid = parse_uuid(argv[0])
+        ticket = pending_ticket(uuid)
+    except ValueError as error:
+        print(str(error), file=sys.stderr)
+        return 1
+    except subprocess.CalledProcessError as error:
+        print(f"task failed: {error.stderr.strip()}", file=sys.stderr)
+        return 1
+    if len(argv) == 2:
+        document = Path(argv[1])
+    else:
+        document = Path("conclusions") / f"{str(uuid)[:8]}.md"
+    try:
+        text = document_text(document)
+    except ValueError as error:
+        print(str(error), file=sys.stderr)
+        return 1
+
+    status = status_value(text)
+    if status != "done":
+        print(f"warning: document Status is '{status}', not 'done'", file=sys.stderr)
+    try:
+        print(annotate_ticket(uuid, ticket, f"Conclusion document: {document}"))
+    except subprocess.CalledProcessError as error:
+        print(f"task failed: {error.stderr.strip()}", file=sys.stderr)
+        return 1
+    print(next_steps(uuid))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

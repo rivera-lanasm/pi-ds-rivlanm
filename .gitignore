@@ -1,0 +1,8 @@
+# Private skills and extensions live here, linked in by install.sh,
+# but are never committed.
+local/
+
+# Backups made by install.sh
+*.bak.*
+
+__pycache__/

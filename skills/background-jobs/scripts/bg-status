@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+#
+# bg-status — report the state of one job, or of every job.
+#
+# Usage: bg-status [JOB_ID]
+#
+# Prints one line per job: id, state, exit code, elapsed seconds, and the size
+# of each log in bytes. Read the sizes before you read a log: a job can write
+# more output than a context window holds.
+#
+# With a JOB_ID, also prints the command and its working directory.
+
+set -euo pipefail
+
+readonly jobs_root="${PI_JOBS_DIR:-$HOME/.pi/jobs}"
+
+# Report the state of a job directory. See references/job-layout.md.
+job_state() {
+  local job_dir="$1" pid alive=no
+  if [ -f "${job_dir}/exit" ]; then
+    printf 'exited'
+    return
+  fi
+  if [ ! -s "${job_dir}/pid" ]; then
+    printf 'starting'
+    return
+  fi
+  pid="$(cat -- "${job_dir}/pid")"
+  if kill -0 "$pid" 2>/dev/null; then
+    alive=yes
+  fi
+  # bg-stop records the request before it sends a signal, so a job stopped on
+  # purpose is never reported as one that disappeared for an unknown reason.
+  if [ -f "${job_dir}/stopped" ]; then
+    if [ "$alive" = yes ]; then
+      printf 'stopping'
+    else
+      printf 'stopped'
+    fi
+    return
+  fi
+  if [ "$alive" = yes ]; then
+    printf 'running'
+  else
+    # No exit file and no process: killed with -9, or lost to a reboot.
+    printf 'vanished'
+  fi
+}
+
+# Seconds from the start of the job to its end, or to now while it runs.
+job_elapsed_seconds() {
+  local job_dir="$1" started ended
+  started="$(date -u -d "$(cat -- "${job_dir}/started_at")" +%s)"
+  if [ -f "${job_dir}/exit" ]; then
+    ended="$(stat -c %Y -- "${job_dir}/exit")"
+  else
+    ended="$(date -u +%s)"
+  fi
+  printf '%s' "$((ended - started))"
+}
+
+file_size_bytes() {
+  stat -c %s -- "$1" 2>/dev/null || printf '0'
+}
+
+print_row() {
+  local job_dir="$1" job_id exit_code
+  job_id="$(basename -- "$job_dir")"
+  if [ -f "${job_dir}/exit" ]; then
+    exit_code="$(cat -- "${job_dir}/exit")"
+  else
+    exit_code="-"
+  fi
+  printf '%-40s %-9s %-5s %8s %10s %10s\n' \
+    "$job_id" \
+    "$(job_state "$job_dir")" \
+    "$exit_code" \
+    "$(job_elapsed_seconds "$job_dir")" \
+    "$(file_size_bytes "${job_dir}/stdout.log")" \
+    "$(file_size_bytes "${job_dir}/stderr.log")"
+}
+
+print_header() {
+  printf '%-40s %-9s %-5s %8s %10s %10s\n' \
+    JOB_ID STATE EXIT SECONDS OUT_BYTES ERR_BYTES
+}
+
+if [ "$#" -ge 1 ]; then
+  job_dir="${jobs_root}/$1"
+  if [ ! -d "$job_dir" ]; then
+    printf 'bg-status: no such job: %s\n' "$1" >&2
+    exit 1
+  fi
+  print_header
+  print_row "$job_dir"
+  printf '\ncwd: %s\ncmd: %s\n' \
+    "$(cat -- "${job_dir}/cwd")" \
+    "$(cat -- "${job_dir}/cmd")"
+  exit 0
+fi
+
+if [ ! -d "$jobs_root" ]; then
+  printf 'bg-status: no jobs directory: %s\n' "$jobs_root" >&2
+  exit 1
+fi
+
+shopt -s nullglob
+job_dirs=("${jobs_root}"/*/)
+if [ "${#job_dirs[@]}" -eq 0 ]; then
+  printf 'bg-status: no jobs in %s\n' "$jobs_root" >&2
+  exit 1
+fi
+
+print_header
+for job_dir in "${job_dirs[@]}"; do
+  print_row "${job_dir%/}"
+done

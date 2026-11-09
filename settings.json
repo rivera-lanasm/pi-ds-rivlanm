@@ -1,0 +1,10 @@
+{
+  "lastChangelogVersion": "1.1.0",
+  "theme": "dark",
+  "defaultProvider": "together",
+  "defaultModel": "moonshotai/Kimi-K3",
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:pi-subagent-manager@0.25.0"
+  ]
+}

@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+#
+# bg-stop — stop a running job.
+#
+# Usage: bg-stop [--grace-seconds N] JOB_ID
+#
+# Sends TERM to the process group of the job, waits for the job to write its
+# exit file, then sends KILL if the job is still alive. The default wait is 10
+# seconds.
+#
+# A stopped job usually writes no exit file. This script records the request in
+# a `stopped` file first, so bg-status reports the job as stopped, and keeps
+# `vanished` for a job that was lost for an unknown reason.
+
+set -euo pipefail
+
+readonly jobs_root="${PI_JOBS_DIR:-$HOME/.pi/jobs}"
+
+usage() {
+  cat >&2 <<'EOF'
+Usage: bg-stop [--grace-seconds N] JOB_ID
+
+  --grace-seconds N   Seconds to wait after TERM before KILL. Default 10.
+EOF
+  exit 2
+}
+
+grace_seconds=10
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --grace-seconds)
+      [ "$#" -ge 2 ] || usage
+      grace_seconds="$2"
+      shift 2
+      ;;
+    -h | --help) usage ;;
+    -*) usage ;;
+    *) break ;;
+  esac
+done
+
+[ "$#" -eq 1 ] || usage
+
+case "$grace_seconds" in
+  '' | *[!0-9]*) usage ;;
+esac
+
+job_dir="${jobs_root}/$1"
+if [ ! -d "$job_dir" ]; then
+  printf 'bg-stop: no such job: %s\n' "$1" >&2
+  exit 1
+fi
+
+if [ -f "${job_dir}/exit" ]; then
+  printf 'bg-stop: job already finished with code %s\n' "$(cat -- "${job_dir}/exit")"
+  exit 0
+fi
+
+if [ ! -s "${job_dir}/pid" ]; then
+  printf 'bg-stop: job has not registered a pid yet: %s\n' "$1" >&2
+  exit 1
+fi
+
+pid="$(cat -- "${job_dir}/pid")"
+if ! kill -0 "$pid" 2>/dev/null; then
+  printf 'bg-stop: job is already gone and wrote no exit code\n'
+  exit 0
+fi
+
+# Record the request before the signal. A TERM usually reaches the wrapper
+# before it can write an exit code, so this marker is what tells bg-status the
+# job was stopped on purpose rather than lost.
+date -u +%Y-%m-%dT%H:%M:%SZ >"${job_dir}/stopped"
+
+# The negative pid signals the whole process group, so children stop too.
+kill -TERM -- "-${pid}" 2>/dev/null || kill -TERM -- "$pid"
+
+waited=0
+while [ "$waited" -lt "$((grace_seconds * 10))" ]; do
+  if [ -f "${job_dir}/exit" ] || ! kill -0 "$pid" 2>/dev/null; then
+    break
+  fi
+  sleep 0.1
+  waited=$((waited + 1))
+done
+
+if kill -0 "$pid" 2>/dev/null; then
+  kill -KILL -- "-${pid}" 2>/dev/null || kill -KILL -- "$pid"
+  printf 'bg-stop: sent KILL after %s seconds\n' "$grace_seconds"
+  exit 0
+fi
+
+if [ -f "${job_dir}/exit" ]; then
+  printf 'bg-stop: job stopped with code %s\n' "$(cat -- "${job_dir}/exit")"
+else
+  printf 'bg-stop: job stopped and wrote no exit code\n'
+fi

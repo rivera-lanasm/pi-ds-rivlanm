@@ -1,0 +1,26 @@
+{
+  "title": "Imperative verb and object, under 80 characters",
+  "project": "<project>.<subproject>",
+  "tags": [],
+  "depends": [],
+  "problem": [
+    "One sentence. The problem that this ticket solves.",
+    "One sentence. What happens if the problem stays unsolved."
+  ],
+  "decision": [
+    "One sentence. The approach.",
+    "One sentence. The reason for this approach."
+  ],
+  "artifacts": [
+    "The modules, documents, or settings that must exist when the work is done."
+  ],
+  "risks": [
+    {
+      "risk": "One sentence. What can go wrong.",
+      "detection": "One sentence. How you will notice it."
+    }
+  ],
+  "done_when": [
+    "One sentence. A condition that you can check. When the workspace has a plan document, take it from the completion criteria."
+  ]
+}
