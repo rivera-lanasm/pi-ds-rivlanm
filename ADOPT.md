@@ -12,7 +12,7 @@ harness, and the user's own skills keep working without entering git.
 ## 1. Clone
 
 ```sh
-git clone <repo-url> ~/pi-harness
+git clone https://github.com/rivera-lanasm/pi-ds-rivlanm.git ~/pi-harness
 ```
 
 ## 2. Move the user's skills into `local/`

@@ -22,7 +22,7 @@ came from.
 ## Install on a new machine
 
 ```sh
-git clone <this-repo> ~/pi-harness
+git clone https://github.com/rivera-lanasm/pi-ds-rivlanm.git ~/pi-harness
 ~/pi-harness/sync.sh push
 ```
 
