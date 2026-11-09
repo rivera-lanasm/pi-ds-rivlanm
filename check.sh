@@ -19,6 +19,7 @@ check() {
 }
 
 echo "Core tooling:"
+check pi   "the agent itself"                   "npm install -g @earendil-works/pi-coding-agent"
 check git  "repo operations"                    "your package manager"
 check uv   "update.py, rebuild.py, taskwarrior scripts" "curl -LsSf https://astral.sh/uv/install.sh | sh"
 check node "pi itself"                          "https://nodejs.org"

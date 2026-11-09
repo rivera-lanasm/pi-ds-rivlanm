@@ -18,13 +18,14 @@ edit the markers and commit.
 Agents without an upstream/ sibling are fully custom and are skipped.
 """
 
+import os
 import subprocess
 import sys
 import tomllib
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent
-PI_AGENT = Path.home() / ".pi" / "agent"
+PI_AGENT = Path(os.environ.get("PI_AGENT_DIR", Path.home() / ".pi" / "agent"))
 
 MANIFEST = tomllib.loads((REPO / "manifest.toml").read_text())
 PACKAGE = MANIFEST["packages"]["pi-subagent-manager"]["package"]
