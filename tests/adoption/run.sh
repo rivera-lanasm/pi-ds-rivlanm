@@ -70,7 +70,7 @@ echo "== 6. Dependency check =="
 if "$REPO/check.sh" > /tmp/check.out 2>&1; then
     fail "check.sh passed but the image lacks d2, logseq, task, jq, ruff"
 fi
-for tool in d2 logseq task jq ruff; do
+for tool in d2 logseq task jq ruff pandoc; do
     grep -q "MISSING: $tool " /tmp/check.out || fail "check.sh did not flag $tool"
 done
 grep -q "ok:      git" /tmp/check.out || fail "check.sh did not confirm git"

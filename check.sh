@@ -32,6 +32,7 @@ check task   "taskwarrior skill"  "https://taskwarrior.org/download/"
 check jq     "taskwarrior and logseq-cli skills" "your package manager"
 check d2     "d2-diagrams skill"  "curl -fsSL https://d2lang.com/install.sh | sh -s --"
 check logseq "logseq-cli skill"   "see agents/skills/logseq-cli/SKILL.md (pip or pipx install)"
+check pandoc "taskwarrior skill (proposal documents)" "https://pandoc.org/installing.html"
 check ruff   "code-standards skill (Python work)" "uv tool install ruff"
 
 echo
