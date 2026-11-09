@@ -1,0 +1,22 @@
+# Provenance for every external component in this repo.
+# update.py reads this file. Bump `pin` or `base` only after reviewing the diff.
+
+[packages.pi-subagent-manager]
+type = "npm"
+package = "pi-subagent-manager"
+pin = "0.25.0" # mirrors the pin in settings.json
+# Our customization is not in the package. It is the override file
+# subagent-manager/agents/coder.md, a modified copy of the shipped agent.
+# subagent-manager/upstream/coder.md holds the pristine shipped file at
+# this pin; rebuild.py uses it as the merge base after a version bump.
+
+[skills.show-me]
+type = "git"
+url = "https://github.com/humanlayer/skills.git"
+path = "plugins/show-me/skills/show-me"
+base = "4d69d20f6e9b57b4fcf0d501ccfb1be961f0f329"
+modified = true # we deleted the bundled agents/ directory
+
+# simple-english is no longer tracked. It began as a fork of
+# https://github.com/AminBlg/SimpleEnglish but now mixes STE with
+# Strunk & White and is maintained as our own skill.
