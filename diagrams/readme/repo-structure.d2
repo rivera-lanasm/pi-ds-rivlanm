@@ -1,0 +1,8 @@
+repo: "pi-ds-rivlanm/ (git repo)" {
+  tracked: "tracked files\nAGENTS.md, settings.json\nskills/, agents/, subagent-manager/"
+  local: "local/ (gitignored)\nprivate skills"
+}
+live: "live system\n~/.pi/agent/ and ~/.agents/"
+
+repo.tracked -> live: "sync.sh push | pull"
+repo.local -> live: "sync.sh push only"

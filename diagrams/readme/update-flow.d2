@@ -1,0 +1,16 @@
+shape: sequence_diagram
+
+m: maintainer
+u: update.py
+p: "pi (pi install)"
+r: rebuild.py
+up: "upstream (npm, GitHub)"
+
+m -> u: "check status, show diff"
+u -> up: "query version, fetch log"
+u -> m: "report; changes nothing"
+m -> p: "pi install npm:…@new-pin"
+p -> up: "download pinned version"
+m -> r: "rebuild customized agents"
+r -> r: "git merge-file ours base theirs"
+r -> m: "merged agents, or conflict markers"
