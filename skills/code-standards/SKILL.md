@@ -4,11 +4,12 @@ description: |
   Apply these standards when you write, refactor, or review code in any
   language. Covers what a linter cannot check: functional design over class
   hierarchies, separation of concerns, docstring content, type coverage at the
-  boundaries, and naming. Also carries the ruff setup and commands for Python.
-  Use when starting a new module or package, restructuring existing code,
-  reviewing a diff, setting up linting or formatting, or when the user says
-  "refactor", "clean up", "code review", "ruff", "lint", "type hints", or
-  "docstring".
+  boundaries, and naming. Language-specific tools and guidance for Python,
+  Go, Java, and TypeScript live under references/, with lint runners under
+  scripts/. Use when starting a new module or package, restructuring existing
+  code, reviewing a diff, setting up linting or formatting, or when the user
+  says "refactor", "clean up", "code review", "ruff", "lint", "type
+  hints", or "docstring".
 ---
 
 # Code Standards
@@ -191,84 +192,17 @@ Names are the highest-leverage thing in a file, and no tool checks them.
 - **Rename the moment a name goes stale**, in its own mechanical commit,
   separate from behavior changes.
 
-## Ruff (Python)
+## Language Guides
 
-Ruff is the linter and formatter. It replaces flake8, isort, pyupgrade, and
-black.
+The standards above are language-independent. For the tools, setup, and
+idioms of one language, read the matching reference and use the runner:
 
-**Pin the version.** As of v0.16.0 ruff enables 413 rules by default, up from
-59. An unpinned ruff turns a routine dependency update into a red CI run.
-
-```toml
-# pyproject.toml
-[project.optional-dependencies]
-dev = ["ruff==0.16.0"]
-
-[tool.ruff]
-line-length = 88
-target-version = "py312"
-
-[tool.ruff.lint]
-# The v0.16 defaults already catch syntax errors and immediate runtime errors.
-# These add the standards this document cares about.
-extend-select = [
-    "ANN",   # every signature is typed
-    "D",     # docstrings exist and are formatted
-    "I",     # import order
-    "N",     # naming conventions
-    "B",     # bugbear: mutable defaults, unused expressions
-    "BLE",   # no bare or overly broad except
-    "DTZ",   # no naive datetimes
-    "RET",   # simplify returns
-    "SIM",   # simplify comprehensions and conditionals
-    "PTH",   # pathlib over os.path
-    "C90",   # cyclomatic complexity
-    "ARG",   # unused arguments
-    "TID",   # no relative imports across packages
-]
-ignore = [
-    "D203",  # conflicts with D211
-    "D213",  # conflicts with D212
-]
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
-
-[tool.ruff.lint.mccabe]
-max-complexity = 10
-
-[tool.ruff.lint.per-file-ignores]
-"tests/**" = ["ANN201", "D103"]  # test functions need no return type or docstring
-```
-
-**Commands:**
-
-```bash
-uv run ruff check .            # lint, pinned version
-uv run ruff check . --fix      # apply safe fixes
-uv run ruff format .           # format
-uvx ruff@latest check .        # preview a newer ruff before you bump the pin
-```
-
-`--unsafe-fixes` changes behavior, not only style. Run it on a clean working
-tree and read the whole diff.
-
-Fix warnings; do not silence them. A `# noqa` carries the rule code and a reason:
-`# noqa: BLE001 - third-party client raises bare Exception`.
-
-## Non-Python Equivalents
-
-The standards above are language-independent. The tools differ.
-
-| Concern | Python | TypeScript / Svelte |
+| Language | Reference | Runner |
 |---|---|---|
-| Lint + format | ruff | ESLint + Prettier, or Biome |
-| Types | annotations + mypy/pyright, `strict` | `tsconfig` with `"strict": true`; no `any` |
-| Boundary validation | Pydantic | Zod, or a hand-written type guard |
-| Data carriers | frozen dataclass, `TypedDict` | `type` aliases and discriminated unions |
-| Docstrings | PEP 257 | TSDoc `/** */` on every module and exported symbol |
-| Immutability | tuples, frozen dataclasses | `readonly`, `as const`, no array mutation |
+| Python (ruff, uv) | `references/python.md` | `scripts/lint-python` |
+| Go (gofmt, vet, golangci-lint) | `references/go.md` | `scripts/lint-go` |
+| Java (Spotless, Checkstyle, Error Prone) | `references/java.md` | none — linting is build-tool bound |
+| TypeScript / Svelte (ESLint, Biome) | `references/typescript.md` | none yet |
 
-In TypeScript, prefer `type` to `interface` for data, plain functions to classes,
-and discriminated unions to optional-field bags. `any` at a boundary is the same
-bug as `dict[str, Any]`.
+Pin every linter version, in every language. An unpinned linter turns a
+routine dependency update into a red CI run.
