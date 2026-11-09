@@ -23,7 +23,10 @@ cat > "$PI_AGENT/settings.json" <<'JSON'
   "lastChangelogVersion": "0.0.0",
   "theme": "light",
   "defaultProvider": "anthropic",
-  "defaultModel": "claude-test-model"
+  "defaultModel": "claude-test-model",
+  "packages": [
+    "npm:user-own-extension"
+  ]
 }
 JSON
 echo '{"fixture":"secret"}' > "$PI_AGENT/auth.json"
@@ -51,11 +54,16 @@ const live = JSON.parse(fs.readFileSync(livePath, "utf8"));
 for (const k of ["defaultProvider", "defaultModel", "theme"]) {
     if (k in backup) live[k] = backup[k];
 }
+const merged = [...(live.packages || [])];
+for (const p of backup.packages || []) {
+    if (!merged.some(q => q.split("@")[0] === p.split("@")[0])) merged.push(p);
+}
+live.packages = merged;
 fs.writeFileSync(livePath, JSON.stringify(live, null, 2) + "\n");
 ' "$BACKUP" "$PI_AGENT/settings.json"
 
 echo "== 5. Install the pinned extension (step 5) =="
-PKG="$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).packages[0])' "$PI_AGENT/settings.json")"
+PKG="$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).packages.find(p => p.includes("pi-subagent-manager")))' "$PI_AGENT/settings.json")"
 pi install "$PKG"
 
 echo "== Assertions =="
@@ -74,8 +82,10 @@ if (s.defaultProvider !== "anthropic") throw new Error("provider lost");
 if (s.theme !== "light") throw new Error("theme lost");
 if (!(s.packages || []).includes("npm:pi-subagent-manager@0.25.0"))
     throw new Error("pin lost");
+if (!(s.packages || []).includes("npm:user-own-extension"))
+    throw new Error("user extension dropped");
 ' "$PI_AGENT/settings.json" || fail "settings.json wrong"
-ok "settings.json keeps the user settings and the repo pin"
+ok "settings.json keeps user settings, user extensions, and the repo pin"
 [ -f "$PI_AGENT/subagent-manager/agents/coder.md" ] || fail "coder.md missing"
 ok "custom coder agent deployed"
 [ -d "$PI_AGENT/npm/node_modules/pi-subagent-manager" ] \

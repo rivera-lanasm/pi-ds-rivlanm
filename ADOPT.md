@@ -49,8 +49,12 @@ the original). List the backups for the user when it finishes.
 
 `push` replaced `~/.pi/agent/settings.json`; `auth.json` was not touched.
 Read the backup and re-apply the user-specific keys: `defaultProvider`,
-`defaultModel`, `theme`. Keep the repo's `packages` list — it pins
-pi-subagent-manager.
+`defaultModel`, `theme`.
+
+Merge the `packages` lists too: keep every entry from the backup and from
+the repo. On overlap, the repo's pinned entry wins. This preserves the
+user's own extensions next to the pinned pi-subagent-manager. Their
+installed files are still on disk; the settings entry is what pi loads.
 
 `settings.json` is the one tracked file a user is expected to modify. The
 change stays local, or the user commits it in their own fork.
