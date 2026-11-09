@@ -16,6 +16,7 @@ came from.
 | `agents/skills/` | `~/.agents/skills/` | Skills in the shared agents directory |
 | `manifest.toml` | — | Source and pinned version of each external part |
 | `sync.sh` | — | Copies between repo and live system, both ways |
+| `check.sh` | — | Reports missing tool dependencies, with install hints |
 | `update.py` | — | Checks pins against upstream and shows diffs |
 | `rebuild.py` | — | Re-applies agent customizations after a package update |
 
@@ -34,7 +35,9 @@ before it replaces one that differs. It does not touch secrets or state:
 `auth.json`, `sessions/`, `npm/`, `models-store.json` stay where they are.
 
 Install pi itself and log in before or after; this repo does not manage
-that.
+that. Run `./check.sh` to see which tools the skills expect — d2, logseq,
+task, jq, ruff — and how to install any that are missing. Missing tools
+disable only the skills that need them.
 
 ## Keep repo and live system in step
 

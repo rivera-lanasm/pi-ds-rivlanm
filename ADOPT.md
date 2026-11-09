@@ -7,7 +7,10 @@ harness, and the user's own skills keep working without entering git.
 ## Prerequisites
 
 - pi is installed and the user is logged in (`~/.pi/agent` exists)
-- git, uv, and ripgrep are installed
+- after the clone in step 1, run `./check.sh` — it lists every tool the
+  harness expects, names what is missing, and gives the install command.
+  Missing tools only disable the skills that need them; they do not
+  block adoption.
 
 ## 1. Clone
 

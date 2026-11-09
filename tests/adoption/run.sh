@@ -66,6 +66,16 @@ echo "== 5. Install the pinned extension (step 5) =="
 PKG="$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).packages.find(p => p.includes("pi-subagent-manager")))' "$PI_AGENT/settings.json")"
 pi install "$PKG"
 
+echo "== 6. Dependency check =="
+if "$REPO/check.sh" > /tmp/check.out 2>&1; then
+    fail "check.sh passed but the image lacks d2, logseq, task, jq, ruff"
+fi
+for tool in d2 logseq task jq ruff; do
+    grep -q "MISSING: $tool " /tmp/check.out || fail "check.sh did not flag $tool"
+done
+grep -q "ok:      git" /tmp/check.out || fail "check.sh did not confirm git"
+ok "check.sh flags missing tools and confirms present ones"
+
 echo "== Assertions =="
 [ -d "$PI_AGENT/skills/user-logs" ] && [ -d "$PI_AGENT/skills/user-sql" ] \
     || fail "user skills missing from live"
