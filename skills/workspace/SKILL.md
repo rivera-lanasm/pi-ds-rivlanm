@@ -87,6 +87,7 @@ When a scratch script earns permanence, move it into a work repo.
 |---|---|---|
 | Taskwarrior | Holds the tickets of every workspace in one database (`~/.task/`). | The `task` CLI; the boundary scripts `tw-new` and `tw-close`; the jq queries. |
 | The tw scripts | `tw-new` validates and creates tickets. `tw-close` closes out a ticket. `tw-check` sets up and checks the workspace. | Bundled with the skill under `scripts/`. |
+| render | Renders a workspace markdown document to styled HTML. | Bundled with the skill under `scripts/`. |
 | pi-subagent-manager | Provides the subagents that work in the workspace. | The architect drafts proposal documents. The coder implements self-contained work. The researcher writes research documents. |
 
 ## Tickets

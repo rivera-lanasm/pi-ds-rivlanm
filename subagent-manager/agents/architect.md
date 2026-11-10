@@ -74,7 +74,7 @@ Ticket: <uuid>
 Render the document after every change:
 
 ```bash
-pandoc --standalone -o proposals/<ticket-id>.html proposals/<ticket-id>.md
+~/.pi/agent/skills/workspace/scripts/render proposals/<ticket-id>.md
 ```
 
 The markdown is the source. The maintainer reads the HTML.

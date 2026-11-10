@@ -26,13 +26,26 @@ Diagrams in this document use the D2 theme Neutral Default.
 |---|---|---|
 | `AGENTS.md`, `settings.json`, `doc-preview-header.html` | `~/.pi/agent/` | Global instructions and pi settings |
 | `skills/` | `~/.pi/agent/skills/` | Seven skills: six ours, `show-me` vendored from its upstream |
-| `subagent-manager/agents/` | `~/.pi/agent/subagent-manager/agents/` | Customized coder and architect for pi-subagent-manager |
+| `subagent-manager/agents/` | `~/.pi/agent/subagent-manager/agents/` | Customized coder, architect, and researcher for pi-subagent-manager |
 | `subagent-manager/upstream/` | — | Pristine shipped agents at the pinned version. Merge base for rebuilds |
 | `manifest.toml` | — | Source and pinned version of each external part |
 | `check.sh` | — | Reports missing tool dependencies, with install hints |
 | `update.py` | — | Reports the status of each pin against upstream, with diffs |
 | `rebuild.py` | — | Re-applies agent customizations after a package update |
-| `tests/adoption/` | — | Docker test of the adoption flow |
+| `diagrams/` | — | D2 sources and renders for this README |
+| `tests/adoption/` | — | Docker test: the adoption flow, then one ticket's full life in a workspace |
+
+## The skills
+
+| Skill | Purpose |
+|---|---|
+| `workspace` | Creates and manages a workspace: tickets, proposal documents, research documents, conclusion documents, a scratch area, and the repositories of one body of work |
+| `code-standards` | Functional-first design, docstrings, separation of concerns, naming; per-language guides and lint runners for Python, Go, Java, TypeScript |
+| `simple-english` | Writes and rewrites prose with Simplified Technical English and Strunk & White rules |
+| `socratic-review` | Works through a technical document with you, one question at a time |
+| `testing-standards` | Decides whether a test earns a permanent place: it must catch a named failure |
+| `d2-diagrams` | Authors D2 diagrams that convey one idea each |
+| `show-me` | Explains a topic visually: call trees, component trees, diffs. Vendored from its upstream |
 
 ## Adopt the harness
 
@@ -42,14 +55,15 @@ git clone https://github.com/rivera-lanasm/pi-ds-rivlanm.git ~/pi-harness
 
 Then ask your pi agent to follow `ADOPT.md`. The agent checks the tools,
 shows each skill collision with a diff, installs the skills you pick,
-merges `settings.json` without losing your provider or your extensions,
+combines the global `AGENTS.md` without losing a rule of yours, merges
+`settings.json` without losing your provider or your extensions,
 installs the pinned extension, and copies the custom agents. Your own
 skills stay where they are. Nothing is removed and nothing is overwritten
 without your approval.
 
-Run `./check.sh` to see which tools the harness expects — d2, task, jq,
-pandoc — and how to install any that are missing. Missing tools disable
-only the skills that need them.
+Run `./check.sh` to see every tool the harness expects, with the install
+command for each missing one. Missing tools disable only the skills that
+need them.
 
 ## Private skills
 

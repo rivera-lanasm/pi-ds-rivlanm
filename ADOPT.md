@@ -39,7 +39,21 @@ cp -r ~/pi-harness/skills/<name> ~/.pi/agent/skills/<name>
 Skills of the user that the repo does not provide stay where they are.
 No step in this guide removes them.
 
-## 3. Merge the settings
+## 3. Adopt the global AGENTS.md
+
+`AGENTS.md` holds the global instructions: the working rules and the
+skills table. It is the keystone of the harness.
+
+- When the user has no `~/.pi/agent/AGENTS.md`, copy the file of the
+  repo.
+- When the user has one, combine the two. Read both files. Keep every
+  rule and every section of the user. Add the rules and the skills
+  table of the repo that the user does not already have. When two rules
+  conflict, show the user both rules and let the user decide. The
+  content of the user is never dropped.
+- Show the user the combined file. Adopt it when the user approves.
+
+## 4. Merge the settings
 
 If `~/.pi/agent/settings.json` exists, merge it with the file of the
 repo. The repo file wins, except three local keys (`defaultProvider`,
@@ -62,7 +76,7 @@ jq -s '
 If the file does not exist yet, copy the file of the repo instead. In
 both cases, `auth.json` is never touched.
 
-## 4. Install the extensions
+## 5. Install the extensions
 
 Run `pi install` with each entry in the `packages` list of the merged
 `~/.pi/agent/settings.json`:
@@ -75,18 +89,25 @@ pi install npm:pi-subagent-manager@0.25.0
 packages but skips a pinned package that is not installed yet. The pin
 survives later `pi update --extensions` runs.
 
-## 5. Install the custom agents
+## 6. Install the custom agents
 
 ```sh
 mkdir -p ~/.pi/agent/subagent-manager/agents
 cp ~/pi-harness/subagent-manager/agents/*.md ~/.pi/agent/subagent-manager/agents/
 ```
 
-These are the customized coder and architect. They replace the shipped
-definitions of the same name. The pristine shipped copies stay in
-`subagent-manager/upstream/` as merge bases for `rebuild.py`.
+These are the customized coder, architect, and researcher. They replace
+the shipped definitions of the same name. The pristine shipped copies
+stay in `subagent-manager/upstream/` as merge bases for `rebuild.py`.
 
-## 6. Verify
+Also copy the render header, which styles the HTML renders of workspace
+documents:
+
+```sh
+cp ~/pi-harness/doc-preview-header.html ~/.pi/agent/doc-preview-header.html
+```
+
+## 7. Verify
 
 - pi starts without errors
 - the skills of the user and the picked skills of the repo are listed
