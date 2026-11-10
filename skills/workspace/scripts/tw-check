@@ -45,7 +45,7 @@ AGENTS_STUB = """\
 Project: {name}
 
 This file holds the session rules for the workspace: the permission gates
-and the hard rules. The taskwarrior skill holds the procedure.
+and the hard rules. The workspace skill holds the procedure.
 """
 
 TOML_STUB = """\

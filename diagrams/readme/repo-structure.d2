@@ -1,8 +1,9 @@
 repo: "pi-ds-rivlanm/ (git repo)" {
-  tracked: "tracked files\nAGENTS.md, settings.json\nskills/, agents/, subagent-manager/"
-  local: "local/ (gitignored)\nprivate skills"
+  content: "harness content\nAGENTS.md, settings.json\nskills/, subagent-manager/"
+  tools: "maintenance tools\ncheck.sh, update.py, rebuild.py"
 }
+agent: "the pi agent of the user\n(follows ADOPT.md)"
 live: "live system\n~/.pi/agent/ and ~/.agents/"
 
-repo.tracked -> live: "sync.sh push | pull"
-repo.local -> live: "sync.sh push only"
+repo.content -> agent: "the user picks each item"
+agent -> live: "installs; a collision asks the user"

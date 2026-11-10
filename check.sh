@@ -21,17 +21,17 @@ check() {
 echo "Core tooling:"
 check pi   "the agent itself"                   "npm install -g @earendil-works/pi-coding-agent"
 check git  "repo operations"                    "your package manager"
-check uv   "update.py, rebuild.py, taskwarrior scripts" "curl -LsSf https://astral.sh/uv/install.sh | sh"
+check uv   "update.py, rebuild.py, workspace scripts" "curl -LsSf https://astral.sh/uv/install.sh | sh"
 check node "pi itself"                          "https://nodejs.org"
 check npm  "pi package installs"                "installed with node"
 check rg   "pi file search"                     "your package manager (ripgrep)"
-check jq   "settings merge (ADOPT.md) and the taskwarrior skill" "your package manager"
+check jq   "settings merge (ADOPT.md) and the workspace skill" "your package manager"
 
 echo
 echo "Skill dependencies:"
-check task   "taskwarrior skill"  "https://taskwarrior.org/download/"
+check task   "workspace skill"  "https://taskwarrior.org/download/"
 check d2     "d2-diagrams skill"  "curl -fsSL https://d2lang.com/install.sh | sh -s --"
-check pandoc "taskwarrior skill (proposal documents)" "https://pandoc.org/installing.html"
+check pandoc "workspace skill (proposal documents)" "https://pandoc.org/installing.html"
 
 echo
 if [ "$missing" -eq 0 ]; then

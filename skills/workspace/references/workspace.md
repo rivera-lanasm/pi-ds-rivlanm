@@ -51,7 +51,7 @@ workflow text.
 Run once for each new workspace:
 
 ```bash
-~/.pi/agent/skills/taskwarrior/scripts/tw-check --init <path>
+~/.pi/agent/skills/workspace/scripts/tw-check --init <path>
 ```
 
 The script creates `proposals/`, `conclusions/`, an `AGENTS.md` stub with
@@ -59,7 +59,7 @@ the `Project:` line, and a `workspace.toml` stub. Fill in the stubs. Then
 check the workspace:
 
 ```bash
-~/.pi/agent/skills/taskwarrior/scripts/tw-check <path>
+~/.pi/agent/skills/workspace/scripts/tw-check <path>
 ```
 
 The `workspace.toml` file declares the parts that the check reads:

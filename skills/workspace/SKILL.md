@@ -1,5 +1,5 @@
 ---
-name: taskwarrior
+name: workspace
 description: |
   Track project work in Taskwarrior with tickets that record the reasoning for
   each design choice. Use to create a ticket, start or finish work, replace a
@@ -16,7 +16,7 @@ description: |
   creates the task.
 ---
 
-# Taskwarrior
+# Workspace
 
 Taskwarrior keeps one task database for all projects, in `~/.task/`. Each task
 is a ticket: a one-line title, plus one annotation that holds the reasoning.
@@ -69,7 +69,7 @@ reasoning is worse than no ticket.
 1. Load the `simple-english` skill. Write every bullet with its rules.
 2. Read the ticket schema:
    ```bash
-   ~/.pi/agent/skills/taskwarrior/scripts/tw-new --schema
+   ~/.pi/agent/skills/workspace/scripts/tw-new --schema
    ```
 3. Write the ticket as JSON. Start from the template in
    `assets/ticket-template.json` and replace each value. Never send the
@@ -77,7 +77,7 @@ reasoning is worse than no ticket.
    characters.
 4. Send the JSON to `tw-new` on stdin:
    ```bash
-   ~/.pi/agent/skills/taskwarrior/scripts/tw-new <<'EOF'
+   ~/.pi/agent/skills/workspace/scripts/tw-new <<'EOF'
    {
      "title": "Add text search to notes",
      "project": "notes.search",
@@ -124,9 +124,9 @@ A workspace organizes its work around tickets: a plan document, proposal
 documents, and conclusion documents.
 
 - To set up a new workspace, run
-  `~/.pi/agent/skills/taskwarrior/scripts/tw-check --init <path>`.
+  `~/.pi/agent/skills/workspace/scripts/tw-check --init <path>`.
 - To make sure that a workspace is complete, run
-  `~/.pi/agent/skills/taskwarrior/scripts/tw-check <path>`.
+  `~/.pi/agent/skills/workspace/scripts/tw-check <path>`.
 
 Read `references/workspace.md` for the layout and the lifecycle.
 
@@ -145,7 +145,7 @@ steps.
 
 1. Finish the conclusion document. Read `references/conclusion-format.md`
    and follow it.
-2. Run `~/.pi/agent/skills/taskwarrior/scripts/tw-close <uuid> [document]`.
+2. Run `~/.pi/agent/skills/workspace/scripts/tw-close <uuid> [document]`.
    When the document name is not `conclusions/<uuid-prefix>.md`, pass the
    path as the second argument. The script makes sure that the ticket is
    open and that the document is complete. Then it annotates the ticket with
