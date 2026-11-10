@@ -21,11 +21,10 @@ Diagrams in this document use the D2 theme Neutral Default.
 | Path | Synced to | Contents |
 |---|---|---|
 | `AGENTS.md`, `settings.json`, `doc-preview-header.html` | `~/.pi/agent/` | Global instructions and pi settings |
-| `skills/` | `~/.pi/agent/skills/` | Eight skills: seven ours, `show-me` vendored from its upstream |
+| `skills/` | `~/.pi/agent/skills/` | Seven skills: six ours, `show-me` vendored from its upstream |
 | `local/skills/`, `local/agents-skills/` | `~/.pi/agent/skills/`, `~/.agents/skills/` | Private skills. Gitignored |
 | `subagent-manager/agents/` | `~/.pi/agent/subagent-manager/agents/` | Customized agents for pi-subagent-manager |
 | `subagent-manager/upstream/` | — | Pristine shipped agents at the pinned version. Merge base for rebuilds |
-| `agents/skills/` | `~/.agents/skills/` | Skills in the shared agents directory |
 | `manifest.toml` | — | Source and pinned version of each external part |
 | `sync.sh` | — | Copies between the repo and the live system |
 | `check.sh` | — | Reports missing tool dependencies, with install hints |

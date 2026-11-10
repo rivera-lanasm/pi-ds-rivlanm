@@ -57,7 +57,6 @@ description alone is how a skill gets ignored while appearing to be followed.
 | Writing, restructuring, or reviewing code in any language | `code-standards` |
 | Adding, reviewing, or deleting tests | `testing-standards` |
 | Documentation, READMEs, runbooks, commit rationales, error messages | `simple-english` |
-| Running a command too slow to wait for, or checking one already running | `background-jobs` |
 | Creating, starting, finishing, or explaining project tasks and tickets; setting up or checking a workspace; proposal documents; context forks and task close-outs | `taskwarrior` |
 | Reviewing a technical document with the maintainer, or helping them understand one, such as a proposal or plan | `socratic-review` |
 | Explaining a topic visually, when another skill or the maintainer asks for it | `show-me` (manual only: read `~/.pi/agent/skills/show-me/SKILL.md`) |
