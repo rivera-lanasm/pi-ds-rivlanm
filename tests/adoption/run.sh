@@ -1,5 +1,5 @@
 #!/bin/bash
-# Adoption test driver. Stands in for the local pi agent and follows
+# Adoption test driver. Stands in for the adopting pi agent and follows
 # ADOPT.md step by step, then asserts the outcome.
 set -euo pipefail
 
@@ -9,13 +9,15 @@ REPO="$HOME/pi-harness"
 fail() { echo "FAIL: $*" >&2; exit 1; }
 ok() { echo "  ok: $*"; }
 
-echo "== 0. Fixture: a user who already runs pi, with 3 own skills =="
+echo "== 0. Fixture: a user with own skills, one collision, and own settings =="
 mkdir -p "$PI_AGENT/skills/user-logs" "$PI_AGENT/skills/user-sql" \
-         "$HOME/.agents/skills/user-broad"
+         "$PI_AGENT/skills/code-standards" "$HOME/.agents/skills/user-broad"
 for s in user-logs user-sql; do
     printf -- "---\nname: %s\ndescription: user-owned fixture skill\n---\n" "$s" \
         > "$PI_AGENT/skills/$s/SKILL.md"
 done
+printf -- "---\nname: code-standards\ndescription: the user's own code standards\n---\nUSER-MARKER\n" \
+    > "$PI_AGENT/skills/code-standards/SKILL.md"
 printf -- "---\nname: user-broad\ndescription: user-owned broad fixture skill\n---\n" \
     > "$HOME/.agents/skills/user-broad/SKILL.md"
 cat > "$PI_AGENT/settings.json" <<'JSON'
@@ -32,84 +34,76 @@ JSON
 echo '{"fixture":"secret"}' > "$PI_AGENT/auth.json"
 AUTH_BEFORE="$(cat "$PI_AGENT/auth.json")"
 
-echo "== 1. Clone (ADOPT.md step 1) =="
+echo "== 1. Clone and check the tools (ADOPT.md step 1) =="
 git clone -q /src/pi-harness "$REPO"
-mkdir -p "$REPO/local/skills" "$REPO/local/agents-skills"
-
-echo "== 2. Move the user's skills into local/ (step 2) =="
-mv "$PI_AGENT/skills/user-logs" "$PI_AGENT/skills/user-sql" "$REPO/local/skills/"
-mv "$HOME/.agents/skills/user-broad" "$REPO/local/agents-skills/"
-
-echo "== 3. Deploy (step 3) =="
-"$REPO/sync.sh" push
-
-echo "== 4. Merge the user's extensions (step 4) =="
-BACKUP="$(ls -d "$PI_AGENT"/settings.json.bak.* | head -1)"
-[ -n "$BACKUP" ] || fail "no settings.json backup found"
-node -e '
-const fs = require("fs");
-const [backupPath, livePath] = process.argv.slice(1);
-const backup = JSON.parse(fs.readFileSync(backupPath, "utf8"));
-const live = JSON.parse(fs.readFileSync(livePath, "utf8"));
-const merged = [...(live.packages || [])];
-for (const p of backup.packages || []) {
-    if (!merged.some(q => q.split("@")[0] === p.split("@")[0])) merged.push(p);
-}
-live.packages = merged;
-fs.writeFileSync(livePath, JSON.stringify(live, null, 2) + "\n");
-' "$BACKUP" "$PI_AGENT/settings.json"
-
-echo "== 5. Install the pinned extension (step 5) =="
-PKG="$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).packages.find(p => p.includes("pi-subagent-manager")))' "$PI_AGENT/settings.json")"
-pi install "$PKG"
-
-echo "== 6. Dependency check =="
 if "$REPO/check.sh" > /tmp/check.out 2>&1; then
-    fail "check.sh passed but the image lacks d2, task, ruff"
+    fail "check.sh passed but the image lacks d2, task, pandoc"
 fi
-for tool in d2 task ruff pandoc; do
+for tool in d2 task pandoc; do
     grep -q "MISSING: $tool " /tmp/check.out || fail "check.sh did not flag $tool"
 done
 grep -q "ok:      git" /tmp/check.out || fail "check.sh did not confirm git"
 grep -q "ok:      jq" /tmp/check.out || fail "check.sh did not confirm jq"
 ok "check.sh flags missing tools and confirms present ones"
 
+echo "== 2. Pick the skills (step 2): keep the user's code-standards, install the rest =="
+for d in "$REPO"/skills/*/; do
+    name="$(basename "$d")"
+    [ "$name" = "code-standards" ] && continue # collision: the user keeps theirs
+    cp -r "$d" "$PI_AGENT/skills/$name"
+done
+
+echo "== 3. Merge the settings (step 3) =="
+cp "$PI_AGENT/settings.json" "$PI_AGENT/settings.json.bak"
+jq -s '
+  (.[1] | {defaultProvider, defaultModel, theme} | with_entries(select(.value != null))) as $local
+  | (.[0].packages // []) as $repo_pkgs
+  | (.[1].packages // []) as $live_pkgs
+  | .[0] + $local
+  | .packages = ($repo_pkgs + ($live_pkgs | map(select(
+      . as $p | ($repo_pkgs | map(split("@")[0]) | index($p | split("@")[0])) | not))))
+' "$REPO/settings.json" "$PI_AGENT/settings.json" > /tmp/settings.merged
+mv /tmp/settings.merged "$PI_AGENT/settings.json"
+
+echo "== 4. Install the extensions (step 4) =="
+PKG="$(jq -r '.packages[] | select(contains("pi-subagent-manager"))' "$PI_AGENT/settings.json")"
+pi install "$PKG"
+
+echo "== 5. Install the custom agents (step 5) =="
+mkdir -p "$PI_AGENT/subagent-manager/agents"
+cp "$REPO"/subagent-manager/agents/*.md "$PI_AGENT/subagent-manager/agents/"
+
 echo "== Assertions =="
 [ -d "$PI_AGENT/skills/user-logs" ] && [ -d "$PI_AGENT/skills/user-sql" ] \
     || fail "user skills missing from live"
-ok "user skills present in live ~/.pi/agent/skills"
 [ -d "$HOME/.agents/skills/user-broad" ] || fail "user broad skill missing"
-ok "user broad skill present in live ~/.agents/skills"
+ok "user skills untouched in the live directories"
+grep -q USER-MARKER "$PI_AGENT/skills/code-standards/SKILL.md" \
+    || fail "collision: the user's code-standards was overwritten"
+ok "same-name collision resolved: the user's version stays"
 [ -d "$PI_AGENT/skills/simple-english" ] || fail "repo skills missing"
-ok "repo skills deployed"
+ok "picked repo skills installed"
 [ "$(cat "$PI_AGENT/auth.json")" = "$AUTH_BEFORE" ] || fail "auth.json changed"
 ok "auth.json untouched"
-node -e '
-const s = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
-if (s.defaultProvider !== "anthropic") throw new Error("provider lost");
-if (s.theme !== "light") throw new Error("theme lost");
-if (!(s.packages || []).includes("npm:pi-subagent-manager@0.25.0"))
-    throw new Error("pin lost");
-if (!(s.packages || []).includes("npm:user-own-extension"))
-    throw new Error("user extension dropped");
-' "$PI_AGENT/settings.json" || fail "settings.json wrong"
-ok "settings.json keeps user settings, user extensions, and the repo pin"
-node -e '
-const s = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
-if ("defaultProvider" in s || "defaultModel" in s)
-    throw new Error("repo settings.json carries a provider or model");
-' "$REPO/settings.json" || fail "repo settings.json not provider-neutral"
-ok "repo settings.json carries no provider or model"
+jq -e '
+  .defaultProvider == "anthropic" and .theme == "light"
+  and (.packages | index("npm:pi-subagent-manager@0.25.0") != null)
+  and (.packages | index("npm:user-own-extension") != null)
+' "$PI_AGENT/settings.json" > /dev/null || fail "settings merge wrong"
+ok "settings keep the user keys, the user extensions, and the repo pin"
 [ -f "$PI_AGENT/subagent-manager/agents/coder.md" ] || fail "coder.md missing"
 [ -f "$PI_AGENT/subagent-manager/agents/architect.md" ] || fail "architect.md missing"
-ok "custom agents (coder, architect) deployed"
+ok "custom agents (coder, architect) installed"
 [ -d "$PI_AGENT/npm/node_modules/pi-subagent-manager" ] \
     || fail "pi-subagent-manager not installed"
 ok "pi-subagent-manager installed at the pinned version"
 cd "$REPO"
 [ -z "$(git status --porcelain)" ] \
     || fail "repo dirty after adoption: $(git status --porcelain)"
-ok "repo git tree clean: user skills and settings stayed out of git"
+ok "repo git tree clean"
+jq -e '(has("defaultProvider") or has("defaultModel")) | not' settings.json > /dev/null \
+    || fail "repo settings.json not provider-neutral"
+ok "repo settings.json carries no provider or model"
 
 echo
 echo "ADOPTION TEST PASSED"
