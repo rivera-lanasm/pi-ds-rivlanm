@@ -92,8 +92,9 @@ Without the file, the check runs only the generic checks.
 Pick one mode for each ticket:
 
 - **Plain work.** The default. The agent does the work in the main session.
-- **Subagent.** For a self-contained part of the work. The subagent works in
-  its own context. The main session receives the conclusion.
+- **Subagent.** For a self-contained part of the work. Name the coder
+  subagent. The coder works in its own context. The main session receives
+  the conclusion.
 - **Context fork.** When the work needs the main session and the user, and
   the work can add heavy context, the user forks the session. Heavy context
   means large files, long command output, or many tool turns. Read

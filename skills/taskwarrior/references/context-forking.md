@@ -30,8 +30,8 @@ must be true:
 - The work can add heavy context: large files, long command output, or many
   tool turns.
 
-If the work is a self-contained part, delegate it to a subagent. If the work
-is small, use plain work.
+If the work is a self-contained part, delegate it to the coder subagent.
+If the work is small, use plain work.
 
 ## Procedure
 
