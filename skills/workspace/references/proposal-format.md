@@ -29,7 +29,7 @@ record of their understanding.
 ## Format
 
 ```markdown
-# <task-id>: <title>
+# <ticket-id>: <title>
 
 Ticket: <uuid>
 
@@ -83,7 +83,7 @@ Ticket: <uuid>
 Render the document after every change:
 
 ```bash
-pandoc --standalone -o proposals/<task-id>.html proposals/<task-id>.md
+pandoc --standalone -o proposals/<ticket-id>.html proposals/<ticket-id>.md
 ```
 
 The markdown is the source. The maintainer reads the HTML.

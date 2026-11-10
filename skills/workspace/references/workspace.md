@@ -12,7 +12,6 @@ part when the work earns it.
 
 | Item | Purpose |
 |---|---|
-| Plan document | One file in the workspace root. It holds the purpose, the design decisions, and the list of tasks with completion criteria. |
 | `AGENTS.md` | The session rules for the workspace. Read "The workspace AGENTS.md". |
 | `proposals/` | One proposal document for each task that needs a design before implementation. |
 | `conclusions/` | One conclusion document for each ticket. |
@@ -21,10 +20,9 @@ part when the work earns it.
 The tracking directories sit beside the repositories, outside all of them.
 Git tracks the code. The documents track the reasoning.
 
-The plan document numbers its tasks with decimal IDs: 1.1, 1.2, 2.1. The
-IDs give short names for conversation and for documents. Name each document
-after the task ID, for example `proposals/3.2.md` for task 3.2. If the plan
-document has no task IDs, use the first 8 characters of the ticket UUID.
+The ticket ID is the first 8 characters of the ticket UUID. It names
+each per-ticket document: `proposals/<ticket-id>.md` and
+`conclusions/<ticket-id>.md`.
 
 ## The workspace AGENTS.md
 
@@ -33,8 +31,8 @@ the workspace, including a session that opens inside a repository.
 
 The file holds only what the skill cannot know:
 
-- The identity of the project: the plan document, the repositories, and the
-  project name for tickets.
+- The identity of the project: the repositories and the project name for
+  tickets.
 - The permission gates, for example "the agent never merges a pull
   request".
 - The hard rules, for example "no new dependency without the user's
@@ -66,7 +64,6 @@ The `workspace.toml` file declares the parts that the check reads:
 
 ```toml
 project = "notes"
-# plan = "notes-development-plan.md"
 # repos = ["repo-one", "repo-two"]
 ```
 

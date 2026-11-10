@@ -6,14 +6,13 @@ A conclusion document holds the result of one ticket. It has two jobs:
   from the document.
 - At close-out, it holds the summary. The ticket points to it.
 
-One file for each ticket: `conclusions/<task-id>.md`. For `<task-id>`, use
-the task ID from the plan document. If the plan document has no task IDs,
-use the first 8 characters of the ticket UUID.
+One file for each ticket: `conclusions/<ticket-id>.md`. The `<ticket-id>`
+is the first 8 characters of the ticket UUID.
 
 ## Format
 
 ```markdown
-# <task-id>: <title>
+# <ticket-id>: <title>
 
 Ticket: <uuid>
 Status: in progress

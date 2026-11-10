@@ -120,8 +120,8 @@ Use `delete`, not `done`. The old ticket was not finished.
 
 ## Set up a workspace
 
-A workspace organizes its work around tickets: a plan document, proposal
-documents, and conclusion documents.
+A workspace organizes its work around tickets: proposal documents and
+conclusion documents.
 
 - To set up a new workspace, run
   `~/.pi/agent/skills/workspace/scripts/tw-check --init <path>`.

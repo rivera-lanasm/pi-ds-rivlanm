@@ -21,6 +21,6 @@
     }
   ],
   "done_when": [
-    "One sentence. A condition that you can check. When the workspace has a plan document, take it from the completion criteria."
+    "One sentence. A condition that you can check."
   ]
 }

@@ -40,7 +40,7 @@ The agent advises. The user does the two navigation steps by hand.
 1. If the ticket needs a fork, say so in one sentence. Give the reason.
 2. Tell the user:
 
-   > Start ticket <task-id> in a new message. That message is the fork point.
+   > Start ticket <ticket-id> in a new message. That message is the fork point.
 
 3. Wait for the user to start the ticket. This is a user action.
 4. Do the work. At each natural boundary, add one dated line to the Progress
@@ -49,8 +49,8 @@ The agent advises. The user does the two navigation steps by hand.
    ticket" section of `SKILL.md`.
 6. Tell the user:
 
-   > Ticket <task-id> is closed out. The conclusion document is at
-   > `conclusions/<task-id>.md`. Open `/tree`. Go to the entry before the
+   > Ticket <ticket-id> is closed out. The conclusion document is at
+   > `conclusions/<ticket-id>.md`. Open `/tree`. Go to the entry before the
    > first message of this ticket. Continue from there. When Pi offers a
    > summary of the branch, decline it. The conclusion document holds the
    > summary.

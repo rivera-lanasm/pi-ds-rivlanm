@@ -50,7 +50,6 @@ and the hard rules. The workspace skill holds the procedure.
 
 TOML_STUB = """\
 project = "{name}"
-# plan = "{name}-development-plan.md"
 # repos = ["repo-one", "repo-two"]
 """
 
@@ -60,7 +59,6 @@ class Config:
     """The declared parts of a workspace, from workspace.toml."""
 
     project: str | None
-    plan: str | None
     repos: tuple[str, ...]
 
 
@@ -86,15 +84,12 @@ def load_config(root: Path) -> Config | None:
     except tomllib.TOMLDecodeError as error:
         raise ValueError(f"workspace.toml: {error}") from None
     project = data.get("project")
-    plan = data.get("plan")
     repos = data.get("repos", [])
     if project is not None and not isinstance(project, str):
         raise ValueError("workspace.toml: project must be a string")
-    if plan is not None and not isinstance(plan, str):
-        raise ValueError("workspace.toml: plan must be a string")
     if not isinstance(repos, list) or not all(isinstance(r, str) for r in repos):
         raise ValueError("workspace.toml: repos must be a list of strings")
-    return Config(project=project, plan=plan, repos=tuple(repos))
+    return Config(project=project, repos=tuple(repos))
 
 
 def git_toplevel(path: Path) -> Path | None:
@@ -149,13 +144,6 @@ def check_directories(root: Path) -> list[Finding]:
         for name in DIRECTORIES
         if not (root / name).is_dir()
     ]
-
-
-def check_plan(root: Path, config: Config) -> list[Finding]:
-    """Check that a declared plan document exists."""
-    if config.plan and not (root / config.plan).is_file():
-        return [Finding("error", f"plan: no file {config.plan}")]
-    return []
 
 
 def check_repos(root: Path, config: Config) -> list[Finding]:
@@ -223,7 +211,7 @@ def run_checks(root: Path, config: Config | None) -> list[Finding]:
     if config is None:
         findings.append(Finding("note", "no workspace.toml: declared checks skipped"))
         return findings
-    return findings + check_plan(root, config) + check_repos(root, config)
+    return findings + check_repos(root, config)
 
 
 def init_workspace(root: Path) -> list[str]:
