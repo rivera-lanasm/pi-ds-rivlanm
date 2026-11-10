@@ -3,7 +3,7 @@
 # requires-python = ">=3.12"
 # dependencies = []
 # ///
-"""Set up and check a Taskwarrior workspace.
+"""Set up and check a workspace.
 
 Boundary script: reads and creates files in the workspace and runs `git` to
 test the repositories. With --init the script creates the workspace
@@ -25,7 +25,7 @@ from typing import Literal
 
 import tomllib
 
-DIRECTORIES = ("proposals", "conclusions")
+DIRECTORIES = ("research", "proposals", "conclusions", "scratch", "repos")
 
 # Keep in sync with tw-close.
 REQUIRED_SECTIONS = (
@@ -50,7 +50,10 @@ and the hard rules. The workspace skill holds the procedure.
 
 TOML_STUB = """\
 project = "{name}"
-# repos = ["repo-one", "repo-two"]
+
+[repos]
+# work = ["repo-one"]
+# context = ["repo-two"]
 """
 
 
@@ -84,12 +87,23 @@ def load_config(root: Path) -> Config | None:
     except tomllib.TOMLDecodeError as error:
         raise ValueError(f"workspace.toml: {error}") from None
     project = data.get("project")
-    repos = data.get("repos", [])
+    repos = data.get("repos", {})
     if project is not None and not isinstance(project, str):
         raise ValueError("workspace.toml: project must be a string")
-    if not isinstance(repos, list) or not all(isinstance(r, str) for r in repos):
-        raise ValueError("workspace.toml: repos must be a list of strings")
-    return Config(project=project, repos=tuple(repos))
+    if isinstance(repos, list):
+        raise ValueError(
+            "workspace.toml: repos must be a table with 'work' and 'context' "
+            "lists; the list form was removed. See references/workspace.md."
+        )
+    if not isinstance(repos, dict):
+        raise ValueError("workspace.toml: repos must be a table")
+    names = []
+    for role in ("work", "context"):
+        values = repos.get(role, [])
+        if not isinstance(values, list) or not all(isinstance(r, str) for r in values):
+            raise ValueError(f"workspace.toml: repos.{role} must be a list of strings")
+        names.extend(values)
+    return Config(project=project, repos=tuple(names))
 
 
 def git_toplevel(path: Path) -> Path | None:
@@ -147,15 +161,28 @@ def check_directories(root: Path) -> list[Finding]:
 
 
 def check_repos(root: Path, config: Config) -> list[Finding]:
-    """Check that each declared repository exists and is a git repository."""
+    """Check that each declared repository exists under repos/ and is a git repository."""
     findings = []
     for name in config.repos:
-        path = root / name
+        path = root / "repos" / name
         if not path.is_dir():
-            findings.append(Finding("error", f"repo {name}: no directory"))
+            findings.append(Finding("error", f"repo {name}: no directory at repos/{name}"))
         elif git_toplevel(path) is None:
             findings.append(Finding("error", f"repo {name}: not a git repository"))
     return findings
+
+
+def check_repos_undeclared(root: Path, config: Config) -> list[Finding]:
+    """Note a directory in repos/ that no role declares."""
+    directory = root / "repos"
+    if not directory.is_dir():
+        return []
+    declared = set(config.repos)
+    return [
+        Finding("note", f"repo {path.name}: no role declares it in workspace.toml")
+        for path in sorted(directory.iterdir())
+        if path.is_dir() and not path.name.startswith(".") and path.name not in declared
+    ]
 
 
 def check_proposals(root: Path) -> list[Finding]:
@@ -211,7 +238,11 @@ def run_checks(root: Path, config: Config | None) -> list[Finding]:
     if config is None:
         findings.append(Finding("note", "no workspace.toml: declared checks skipped"))
         return findings
-    return findings + check_repos(root, config)
+    return (
+        findings
+        + check_repos(root, config)
+        + check_repos_undeclared(root, config)
+    )
 
 
 def init_workspace(root: Path) -> list[str]:

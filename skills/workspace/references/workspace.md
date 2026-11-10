@@ -13,16 +13,44 @@ part when the work earns it.
 | Item | Purpose |
 |---|---|
 | `AGENTS.md` | The session rules for the workspace. Read "The workspace AGENTS.md". |
-| `proposals/` | One proposal document for each task that needs a design before implementation. |
+| `workspace.toml` | The declared parts that the check reads. |
+| `research/` | One research document for each research question. |
+| `proposals/` | One proposal document for each ticket that needs a design before implementation. |
 | `conclusions/` | One conclusion document for each ticket. |
-| Repositories | One or more Git repositories. The code under work. |
+| `scratch/` | One-off scripts and ephemeral tests. |
+| `repos/` | The repositories of the workspace. Each repository has one role. |
 
-The tracking directories sit beside the repositories, outside all of them.
-Git tracks the code. The documents track the reasoning.
+The documents (`research/`, `proposals/`, `conclusions/`), `AGENTS.md`, and
+`workspace.toml` are tracked: they are the durable record of the workspace,
+and documents and tickets can point at them. `scratch/` is ephemeral:
+anything in it can be deleted at any time, and nothing points at it. When a
+scratch script earns permanence, it moves into a work repo. Git tracks the
+code inside each repository. The documents track the reasoning.
 
 The ticket ID is the first 8 characters of the ticket UUID. It names
 each per-ticket document: `proposals/<ticket-id>.md` and
 `conclusions/<ticket-id>.md`.
+
+## The repositories
+
+Each repository in `repos/` has one role:
+
+- A work repo is a repository that the work changes. Tickets land commits
+  here.
+- A context repo is a repository that the work reads only: helpers,
+  examples, upstream sources.
+
+Declare each repository in `workspace.toml`:
+
+```toml
+[repos]
+work = ["notes-app"]
+context = ["notes-legacy"]
+```
+
+The check resolves each declared name at `repos/<name>` and makes sure that
+it is a git repository. A directory in `repos/` that no role declares earns
+a note, so the declaration stays honest.
 
 ## The workspace AGENTS.md
 
@@ -64,7 +92,10 @@ The `workspace.toml` file declares the parts that the check reads:
 
 ```toml
 project = "notes"
-# repos = ["repo-one", "repo-two"]
+
+[repos]
+# work = ["repo-one"]
+# context = ["repo-two"]
 ```
 
 Without the file, the check runs only the generic checks.

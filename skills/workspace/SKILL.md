@@ -1,27 +1,88 @@
 ---
 name: workspace
 description: |
-  Track project work in Taskwarrior with tickets that record the reasoning for
-  each design choice. Use to create a ticket, start or finish work, replace a
-  ticket when its decision changes, show the state of work in a project, show
-  how a task relates to other tasks, or explain the current task. Use it also
-  to set up a workspace that organizes work around tickets, to draft or
-  review a proposal document, to fork the session context for one ticket,
-  or to close out a ticket with a conclusion document. Use when the user
-  says "task", "ticket", "todo", "backlog", "what is next", "what is
-  blocked", "status of the work", "explain this task", "workspace",
-  "proposal", "proposal document", "fork the context", "conclusion
-  document", or "close out". All projects share one Taskwarrior database. Tickets are created only
-  through the bundled tw-new script, which validates the ticket before it
-  creates the task.
+  Create and manage a workspace: one directory that holds the documents,
+  the scratch area, and the repositories of one body of work. Use to set
+  up or check a workspace, to add a repository as a work repo or a
+  context repo, to commission a research document, to draft or review a
+  proposal document, or to work the tickets that track the work: create,
+  start, finish, replace, explain, show the state, show the relations,
+  fork the context, close out. Tickets live in Taskwarrior. The agents
+  come from pi-subagent-manager. Use when the user says "workspace",
+  "research", "scratch", "repo", "task", "ticket", "todo", "backlog",
+  "what is next", "what is blocked", "status of the work", "explain
+  this task", "proposal", "fork the context", "conclusion document",
+  or "close out". Tickets are created only through the bundled tw-new
+  script, which validates the ticket before it creates the task.
 ---
 
 # Workspace
 
-Taskwarrior keeps one task database for all projects, in `~/.task/`. Each task
-is a ticket: a one-line title, plus one annotation that holds the reasoning.
+The workspace skill creates and manages a workspace: one directory that
+holds the documents, the scratch area, and the repositories of one body of
+work. Taskwarrior holds the tickets of the workspace in one database, in
+`~/.task/`. pi-subagent-manager provides the agents that work in it. The
+skill guides both tools. Each Taskwarrior task is a ticket: a one-line
+title, plus one annotation that holds the reasoning.
 
-## Rules for every command
+## The layout
+
+| Part | Purpose | Tracking |
+|---|---|---|
+| `AGENTS.md` | The session rules for the workspace | tracked |
+| `workspace.toml` | The declared parts that `tw-check` reads | tracked |
+| `research/` | One research document for each research question | tracked |
+| `proposals/` | One proposal document for each ticket that needs a design | tracked |
+| `conclusions/` | One conclusion document for each ticket | tracked |
+| `scratch/` | One-off scripts and ephemeral tests | ephemeral |
+| `repos/` | The repositories of the workspace | each repo has its own git |
+
+Tracked means: part of the durable record of the workspace. Documents and
+tickets can point at a tracked item. Ephemeral means: deletable at any
+time, and nothing points at it. Read `references/workspace.md` for the
+full rules.
+
+## Set up a workspace
+
+- To set up a new workspace, run
+  `~/.pi/agent/skills/workspace/scripts/tw-check --init <path>`. The script
+  creates the skeleton and never overwrites an existing file.
+- Fill in the stubs: the workspace `AGENTS.md` and `workspace.toml`.
+- To make sure that a workspace is complete, run
+  `~/.pi/agent/skills/workspace/scripts/tw-check <path>`.
+
+Read `references/workspace.md` for the layout and the lifecycle.
+
+## Add a repository
+
+Clone the repository into `repos/`. Then declare its role in
+`workspace.toml`:
+
+```toml
+[repos]
+work = ["repo-one"]
+context = ["repo-two"]
+```
+
+A work repo is a repository that the work changes. A context repo is a
+repository that the work reads only: helpers, examples, upstream sources.
+Run `tw-check` after each change.
+
+## Use the scratch directory
+
+`scratch/` holds one-off scripts and ephemeral tests. Nothing in it is
+tracked: no ticket, no document, and no script points at a scratch file.
+When a scratch script earns permanence, move it into a work repo.
+
+## The tools
+
+| Tool | What it does here | Its parts |
+|---|---|---|
+| Taskwarrior | Holds the tickets of every workspace in one database (`~/.task/`). | The `task` CLI; the boundary scripts `tw-new` and `tw-close`; the jq queries. |
+| The tw scripts | `tw-new` validates and creates tickets. `tw-close` closes out a ticket. `tw-check` sets up and checks the workspace. | Bundled with the skill under `scripts/`. |
+| pi-subagent-manager | Provides the subagents that work in the workspace. | The architect drafts proposal documents. The coder implements self-contained work. The researcher writes research documents. |
+
+## Rules for every ticket command
 
 - Add `rc.confirmation=off` to each `task` command that changes data. Without
   it, Taskwarrior can stop and wait for an answer that you cannot give.
@@ -118,18 +179,6 @@ Do not edit the reasoning of a ticket. Replace the ticket:
 
 Use `delete`, not `done`. The old ticket was not finished.
 
-## Set up a workspace
-
-A workspace organizes its work around tickets: proposal documents and
-conclusion documents.
-
-- To set up a new workspace, run
-  `~/.pi/agent/skills/workspace/scripts/tw-check --init <path>`.
-- To make sure that a workspace is complete, run
-  `~/.pi/agent/skills/workspace/scripts/tw-check <path>`.
-
-Read `references/workspace.md` for the layout and the lifecycle.
-
 ## Fork the session context for one ticket
 
 A fork is a choice for each ticket. It is never the default. When the work
@@ -171,7 +220,7 @@ task rc.verbose=nothing project:<p> status:pending count
 To give a summary, use these groups in this order: started, ready, blocked,
 done in the last 7 days. Write the summary with the `simple-english` rules.
 
-## Show how a task relates to other tasks
+## Show how a ticket relates to other tickets
 
 - `+BLOCKED` tasks wait on other tasks. `+BLOCKING` tasks stop other tasks.
 - To list each dependency in a project as an edge, run this command:
@@ -183,7 +232,7 @@ done in the last 7 days. Write the summary with the `simple-english` rules.
 - To show the relations to the user, read
   `~/.pi/agent/skills/show-me/SKILL.md` and follow it.
 
-## Explain a task
+## Explain a ticket
 
 1. Read the full ticket:
    `task rc.verbose=nothing <uuid> info`
