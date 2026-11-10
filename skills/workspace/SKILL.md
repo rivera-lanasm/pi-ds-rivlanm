@@ -74,6 +74,13 @@ Run `tw-check` after each change.
 tracked: no ticket, no document, and no script points at a scratch file.
 When a scratch script earns permanence, move it into a work repo.
 
+## Commission research
+
+- Formulate the question with the user. One sentence: the researcher pauses when a question needs more.
+- Assemble the context set with the user: the repositories, the documents, and the pages the research reads. Include earlier research documents when they help.
+- Emit the researcher with the question, the context set, and the workspace path. The researcher writes one document into `research/` and nothing else. Its filename shows its topic and its relations.
+- At the user's discretion, run the socratic review against the research document with the main session.
+
 ## The tools
 
 | Tool | What it does here | Its parts |
