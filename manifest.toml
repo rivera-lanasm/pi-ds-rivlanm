@@ -5,8 +5,9 @@
 type = "npm"
 package = "pi-subagent-manager"
 pin = "0.25.0" # mirrors the pin in settings.json
-# Our customization is not in the package. It is the override file
-# subagent-manager/agents/coder.md, a modified copy of the shipped agent.
+# Our customization is not in the package. The override files in
+# subagent-manager/agents/ (coder, architect, researcher) are modified
+# copies of the shipped agents.
 # subagent-manager/upstream/coder.md holds the pristine shipped file at
 # this pin; rebuild.py uses it as the merge base after a version bump.
 
