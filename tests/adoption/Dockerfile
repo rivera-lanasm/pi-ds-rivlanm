@@ -5,7 +5,7 @@
 FROM node:22-bookworm
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates \
+ && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates jq \
  && rm -rf /var/lib/apt/lists/*
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh

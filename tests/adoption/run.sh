@@ -43,7 +43,7 @@ mv "$HOME/.agents/skills/user-broad" "$REPO/local/agents-skills/"
 echo "== 3. Deploy (step 3) =="
 "$REPO/sync.sh" push
 
-echo "== 4. Re-apply the user's settings (step 4) =="
+echo "== 4. Merge the user's extensions (step 4) =="
 BACKUP="$(ls -d "$PI_AGENT"/settings.json.bak.* | head -1)"
 [ -n "$BACKUP" ] || fail "no settings.json backup found"
 node -e '
@@ -51,9 +51,6 @@ const fs = require("fs");
 const [backupPath, livePath] = process.argv.slice(1);
 const backup = JSON.parse(fs.readFileSync(backupPath, "utf8"));
 const live = JSON.parse(fs.readFileSync(livePath, "utf8"));
-for (const k of ["defaultProvider", "defaultModel", "theme"]) {
-    if (k in backup) live[k] = backup[k];
-}
 const merged = [...(live.packages || [])];
 for (const p of backup.packages || []) {
     if (!merged.some(q => q.split("@")[0] === p.split("@")[0])) merged.push(p);
@@ -68,12 +65,13 @@ pi install "$PKG"
 
 echo "== 6. Dependency check =="
 if "$REPO/check.sh" > /tmp/check.out 2>&1; then
-    fail "check.sh passed but the image lacks d2, task, jq, ruff"
+    fail "check.sh passed but the image lacks d2, task, ruff"
 fi
-for tool in d2 task jq ruff pandoc; do
+for tool in d2 task ruff pandoc; do
     grep -q "MISSING: $tool " /tmp/check.out || fail "check.sh did not flag $tool"
 done
 grep -q "ok:      git" /tmp/check.out || fail "check.sh did not confirm git"
+grep -q "ok:      jq" /tmp/check.out || fail "check.sh did not confirm jq"
 ok "check.sh flags missing tools and confirms present ones"
 
 echo "== Assertions =="

@@ -44,7 +44,9 @@ moves the existing skills into `local/` before the first push.
 
 When a live file differs, `push` backs it up before it replaces it. The
 script does not touch secrets or state: `auth.json`, `sessions/`, `npm/`,
-and `models-store.json` stay where they are.
+and `models-store.json` stay where they are. For `settings.json`, `push`
+keeps the live `defaultProvider`, `defaultModel`, and `theme`; `pull`
+filters them out. Both need jq.
 
 Install pi itself and log in; this repo does not manage that step. Then
 run `./check.sh`. It lists the tools that the skills expect and gives the
@@ -109,6 +111,5 @@ After you review the diff:
   `subagent-manager/.import-offered` — state that pi regenerates.
 - `bin/rg` — a binary. Install ripgrep through your package manager.
 - `settings.json` holds no secrets, so git tracks it. It carries no
-  provider or model: `sync.sh pull` filters `defaultProvider` and
-  `defaultModel` out, so a local provider choice (together, LiteLLM, or
-  another) stays local.
+  provider, model, or theme. Those stay local: `push` keeps the live
+  values and `pull` filters them out.

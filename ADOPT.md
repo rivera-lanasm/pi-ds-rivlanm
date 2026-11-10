@@ -48,21 +48,20 @@ cd ~/pi-harness && ./sync.sh push
 `push` backs up every live file it replaces (`*.bak.<timestamp>` next to
 the original). List the backups for the user when it finishes.
 
-## 4. Re-apply the user's settings
+## 4. Merge the user's extensions
 
-`push` replaced `~/.pi/agent/settings.json`; `auth.json` was not touched.
-Read the backup and re-apply the user-specific keys: `defaultProvider`,
-`defaultModel`, `theme`.
+`push` keeps the live `defaultProvider`, `defaultModel`, and `theme` on
+its own. `auth.json` is not touched. One list still needs a merge:
+`packages`.
 
-Merge the `packages` lists too: keep every entry from the backup and from
+Merge the `packages` lists: keep every entry from the backup and from
 the repo. On overlap, the repo's pinned entry wins. This preserves the
 user's own extensions next to the pinned pi-subagent-manager. Their
 installed files are still on disk; the settings entry is what pi loads.
 
-The repo's `settings.json` carries no provider or model. When the user
-changes provider later — together, LiteLLM, or another — `sync.sh pull`
-filters `defaultProvider` and `defaultModel` out, so the choice stays
-local and never enters git.
+The repo's `settings.json` carries no provider, model, or theme. When the
+user changes provider later — together, LiteLLM, or another — the choice
+stays local: `push` keeps it and `pull` filters it out of git.
 
 ## 5. Install the pinned extension
 
