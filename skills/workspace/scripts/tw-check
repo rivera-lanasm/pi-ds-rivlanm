@@ -44,8 +44,9 @@ AGENTS_STUB = """\
 
 Project: {name}
 
-This file holds the session rules for the workspace: the permission gates
-and the hard rules. The workspace skill holds the procedure.
+This file holds the session rules for the workspace. The workspace skill
+holds the procedure. Fill in the commands and the hard rules: start from
+references/agents-md-template.md in the workspace skill.
 """
 
 TOML_STUB = """\

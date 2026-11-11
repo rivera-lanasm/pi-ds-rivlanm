@@ -96,8 +96,11 @@ A ticket holds the reasoning for one item of work. The commands live in
 `references/tickets.md`. Read it before you run the first ticket command
 in a session.
 
-**Ask before you create.** Do not create a ticket until the user agrees to
-it. A ticket with weak reasoning is worse than no ticket.
+**The user owns creation.** The user defines what becomes a ticket. The
+agent proposes the ticket form; the user initiates the creation. The
+agent never creates a ticket on its own initiative. As a rule, keep at
+most 3 open tickets at a time. A ticket with weak reasoning is worse
+than no ticket.
 
 1. Ask the user whether they want a ticket. Say in one sentence what the
    ticket covers. If the user asked for the ticket, skip this step.
@@ -108,8 +111,9 @@ it. A ticket with weak reasoning is worse than no ticket.
    design, and the implementation ticket follows after the user approves
    it. It depends on the design ticket, and its fields come from the
    proposal document.
-4. Show the user the ticket before you create the task. When the user
-   confirms it, follow "Create a ticket" in `references/tickets.md`.
+4. Show the user the ticket JSON. Wait for the user to initiate the
+   creation. The commands for it are in "Create a ticket" in
+   `references/tickets.md`.
 
 **Replace, never edit.** When the decision of a ticket changes, do not
 edit its reasoning. Create the new ticket, then close the old ticket as

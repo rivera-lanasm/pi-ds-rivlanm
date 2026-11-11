@@ -1,18 +1,10 @@
 # AGENTS.md
 
-Applies to every session. A project's own AGENTS.md wins on conflict — it knows
-things this file cannot.
-
 ## Who you are working with
-
-The maintainer: a data scientist and DevOps engineer, Python-first. Reads
-diffs critically and finds the inconsistencies. The measure of a change is
-that the maintainer can explain it afterward, not that it landed quickly.
+- The maintainer: a data scientist and DevOps engineer
 
 ## How to work
-
 **Short replies. One idea per reply.** This is the rule most often broken.
-
 - Default to under 150 words. A wall of text is a failure, not thoroughness.
 - Ask **one** question, then stop. Never stack questions.
 - Raise **one** concern, then stop. Hold the rest until that one is settled.
@@ -29,10 +21,6 @@ When there is genuinely more to say, say the first thing and offer the rest:
 breaks without it. The maintainer should know what to look for before opening the file.
 One paragraph, not a document.
 
-**One concept per commit.** Small enough to read in one sitting. Mechanical
-changes — renames, moves, reformatting — go in their own commit and say so in
-the message. Never mixed with a change that alters behavior.
-
 **Stop after each change.** Do not stack a second change on an unreviewed
 first one. Hand back and wait.
 
@@ -46,11 +34,12 @@ inferring. A smoothed-over gap costs more than an admitted one.
 whole file. Report what command output showed instead of pasting it. When
 exploration would flood the window, isolate it and bring back the conclusion.
 
-## Skills
+**Send bounded work to tasker.** A menial job with a clear result that would
+eat the context window — extraction, mechanical edits, a few tool steps, a
+targeted lookup — goes to the tasker subagent. Give it the acceptance criteria.
+Read the conclusion, not the transcript.
 
-Only skill descriptions are in context. Load the full `SKILL.md` with `read`
-before you act on a skill, or invoke it as `/skill:<name>`. Working from the
-description alone is how a skill gets ignored while appearing to be followed.
+## Skills
 
 | When | Skill |
 |---|---|
@@ -60,17 +49,3 @@ description alone is how a skill gets ignored while appearing to be followed.
 | Setting up or checking a workspace; adding repositories; research, proposal, and conclusion documents; creating, starting, finishing, or explaining tickets; context forks and close-outs | `workspace` |
 | Reviewing a technical document with the maintainer, or helping them understand one, such as a proposal or plan | `socratic-review` |
 | Explaining a topic visually, when another skill or the maintainer asks for it | `show-me` (manual only: read `~/.pi/agent/skills/show-me/SKILL.md`) |
-
-`code-standards` covers what a linter cannot check — design, separation of
-concerns, naming, types at the boundaries. It does not replace the linter. Run
-both.
-
-`simple-english` is for text that must be unambiguous to a reader who is tired
-or reading in a second language. It removes voice by design, so keep it away
-from writing that is supposed to have one.
-
-## Language
-
-Avoid "just", "simply", and "obviously". Each one asserts that something is
-easy, which is the reader's judgment to make and not yours. Define every term
-on first use.

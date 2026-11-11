@@ -54,23 +54,43 @@ a note, so the declaration stays honest.
 
 ## The workspace AGENTS.md
 
-The file sits at the workspace root. It governs every session that opens in
-the workspace, including a session that opens inside a repository.
+The file sits at the workspace root. Pi loads it for every session in
+the workspace, together with the global file. When the session works
+inside a repository that carries its own AGENTS.md, that file loads
+too, closest to the work.
 
-The file holds only what the skill cannot know:
+The file holds only what the agent cannot work out by reading the code:
 
-- The identity of the project: the repositories and the project name for
-  tickets.
+- The project name for tickets. The repositories live in
+  `workspace.toml`; do not repeat them here.
+- The commands, one per line, in the form you paste into a terminal: how
+  to build, how to test, how to run one test, how to lint. Name only the
+  commands that differ from the tool defaults.
 - The permission gates, for example "the agent never merges a pull
   request".
-- The hard rules, for example "no new dependency without the user's
-  approval".
+- The hard rules, written so you can check them. "Never edit files under
+  dist/, they come from the build" stops one mistake and names the cause.
+  "Format the code properly" verifies nothing.
+- The ticket policy: what becomes a ticket in this workspace. The skill
+  sets the working limit and the creation rule; the workspace file defines
+  what counts as a ticket here.
+- The secrets pointer, for example "credentials live in .env, which is
+  not tracked; ask before reading it". Never a secret itself.
 
-The procedure stays in the skill. The file names the skill. It never copies
-the procedure of the skill. A copy drifts, and the two texts disagree.
+The procedure stays in the skill. The file names the skill. It never
+copies the procedure of the skill. A copy drifts, and the two texts
+disagree.
 
-Keep the file short: every session loads it. Write rules and pointers, not
-workflow text.
+When a rule belongs to one repository only, put it in that repository's
+own AGENTS.md. Pi loads it beside the code it governs.
+
+Keep the file short: every session loads it, and instruction-following
+degrades as the instruction count grows. Add a line when you have typed
+the same correction into a session twice. Start from the template in
+`references/agents-md-template.md`.
+
+Sources: humanlayer.dev/blog/writing-a-good-claude-md and
+ssdnodes.com/learn/agents-md-and-human-md.
 
 ## Set up the workspace
 
