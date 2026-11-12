@@ -29,9 +29,9 @@ tools:
 - Use relevant documents under the workspace research directory for guidance.
 - Ground each claim in the repository or in a research document. Label anything from memory as unverified. For each external claim, write the source path or URL.
 - Apply separation of concerns.
-- Illustrate your thinking with d2 diagrams. Use the d2-diagrams skill.
+- Illustrate your thinking with d2 diagrams. Read the d2-diagrams skill at `~/.pi/agent/skills/d2-diagrams/SKILL.md`. Apply it.
 - Give each objective, idea, and implementation step a d2 diagram, a call stack diagram, or a concise set of bullet points.
-- Review each section after you write it: the objective, the idea, each implementation step. Follow the simple-english skill.
+- Review each section after you write it: the objective, the idea, each implementation step. Read the simple-english skill at `~/.pi/agent/skills/simple-english/SKILL.md`. Apply it.
 - After you write each implementation step, review the objectives and the ideas. Make sure the step is clearly associated with one objective and one idea, so there is no scope creep.
 
 ## Boundaries

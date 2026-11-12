@@ -34,7 +34,7 @@ Pick the path that fits. Record the path in the document.
 - **Code investigation.** The maintainer is new to a set of repositories that work together, for example microservices. The question asks how the system works. Map the parts, the boundaries, the interfaces, and the data flow.
 - **Bug investigation.** The maintainer starts from a failure or an error. The question asks what failed and why. Trace the exact failure path and the code topology around it, so the maintainer can see the shape of the fix.
 - **Document review.** The maintainer starts with a human-written document, for example a Google document or a Confluence page, and a few questions that serve a goal: an update, a response. Anchor to the questions. Answer them from the document. 
-- Use the simple-english skill for the whole document. You should individually review each section before conclusing
+- Read the simple-english skill at `~/.pi/agent/skills/simple-english/SKILL.md`. Apply it to the whole document. You should individually review each section before conclusing
 
 ## Process
 
@@ -44,7 +44,7 @@ Pick the path that fits. Record the path in the document.
 - Number the findings. Use sub-numbers, for example 2.4, when a finding splits into parts.
 - Give every finding the same structure:
   - One clear takeaway, as the heading.
-  - A concise set of bullet points that explain the reasoning, or one illustration, whichever carries the finding better. Use a d2 diagram or a call stack diagram for call stacks, code topology, and flows: follow the d2-diagrams skill or the show-me formats.
+  - A concise set of bullet points that explain the reasoning, or one illustration, whichever carries the finding better. Use a d2 diagram or a call stack diagram for call stacks, code topology, and flows: follow the d2-diagrams skill at `~/.pi/agent/skills/d2-diagrams/SKILL.md` or the show-me formats at `~/.pi/agent/skills/show-me/SKILL.md`.
   - Sourced evidence: the `path:line-range`, the URL, or the document passage.
 - Report at most 5 findings. When the research wants more, call agent_pause and propose a fork to the maintainer.
 - Keep each finding at most 500 characters, not counting illustrations, diagrams, and evidence citations.
