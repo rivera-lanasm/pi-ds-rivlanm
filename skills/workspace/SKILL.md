@@ -78,7 +78,7 @@ When a scratch script earns permanence, move it into a work repo.
 
 - Formulate the question with the user. One sentence: the `ws-researcher` agent pauses when a question needs more.
 - Assemble the context set with the user: the repositories, the documents, and the pages the research reads. Include earlier research documents when they help.
-- Emit the `ws-researcher` agent with the question, the context set, and the workspace path. The agent writes one document into `research/` and nothing else. Its filename shows its topic and its relations.
+- Emit the `ws-researcher` agent with a brief from `brief-new`: the question, the context set, the workspace path, and the document name. Read "Start a subagent". The agent writes one document into `research/` and nothing else. Its filename shows its topic and its relations.
 - At the user's discretion, run the socratic review against the research document with the main session.
 
 ## The tools
@@ -87,8 +87,43 @@ When a scratch script earns permanence, move it into a work repo.
 |---|---|---|
 | Taskwarrior | Holds the tickets of every workspace in one database (`~/.task/`). | The `task` CLI; the boundary scripts `tw-new` and `tw-close`; the jq queries. |
 | The tw scripts | `tw-new` validates and creates tickets. `tw-close` closes out a ticket. `tw-check` sets up and checks the workspace. | Bundled with the skill under `scripts/`. |
+| brief-new | Validates and writes the brief that starts a `ws-` agent. | Bundled with the skill under `scripts/`. |
 | render | Renders a workspace markdown document to styled HTML. | Bundled with the skill under `scripts/`. |
 | pi-subagent-manager | Provides the subagents that work in the workspace. | The `ws-architect` agent drafts proposal documents. The `ws-coder` agent implements self-contained work. The `ws-researcher` agent writes research documents. |
+
+## Start a subagent
+
+A brief is the task text that the main session writes when it starts a
+subagent. The agent file gives the standing instructions of the agent.
+The brief gives the work of one run.
+
+The `brief-new` script writes the brief of each `ws-` agent. The task of
+a `ws-` agent is always the output of `brief-new`, unchanged.
+
+1. Read the fields of the agent:
+   ```bash
+   ~/.pi/agent/skills/workspace/scripts/brief-new --schema <agent>
+   ```
+2. Write the brief as JSON. Take each value from the ticket or from the
+   conversation. If a field has no value, ask the user. Do not invent a
+   value.
+3. Send the JSON to the script on stdin:
+   ```bash
+   ~/.pi/agent/skills/workspace/scripts/brief-new <agent> <<'EOF'
+   { ... }
+   EOF
+   ```
+4. If the script reports a problem, correct the JSON and run it again.
+5. Start the agent with the printed text as its task.
+
+`<agent>` is `ws-researcher`, `ws-architect`, or `ws-coder`. The script
+checks the values against the workspace and against Taskwarrior. For
+`ws-architect` and `ws-coder`, the script copies the title and the
+reasoning from the ticket.
+
+A subagent loads no skill and no `AGENTS.md`. It starts from a snapshot
+of the main conversation, but the snapshot is not a specification. The
+brief carries each fact that the agent needs.
 
 ## Tickets
 

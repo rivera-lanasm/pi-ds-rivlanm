@@ -140,7 +140,7 @@ Pick one mode for each ticket:
 - **Plain work.** The default. The agent does the work in the main session.
 - **Subagent.** For a self-contained part of the work. Name the `ws-coder`
   subagent. The `ws-coder` agent works in its own context. The main session receives
-  the conclusion.
+  the conclusion. Write the brief with `brief-new`: read "Start a subagent" in `SKILL.md`.
 - **Context fork.** When the work needs the main session and the user, and
   the work can add heavy context, the user forks the session. Heavy context
   means large files, long command output, or many tool turns. Read
