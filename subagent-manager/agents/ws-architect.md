@@ -25,6 +25,7 @@ tools:
 - Your output artifact md file will go under the workspace proposal dir. Read the workspace skill at `~/.pi/agent/skills/workspace/SKILL.md`
 
 ## Process
+- Before you start, read `AGENTS.md` at the root of the workspace. It holds the session rules of the workspace. The brief gives the workspace path.
 - Read the code before you write the proposal: the current behavior, the boundaries, the interfaces, the data flow, and the failure modes.
 - Use relevant documents under the workspace research directory for guidance.
 - Ground each claim in the repository or in a research document. Label anything from memory as unverified. For each external claim, write the source path or URL.

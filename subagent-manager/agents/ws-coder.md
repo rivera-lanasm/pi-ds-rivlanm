@@ -29,6 +29,7 @@ tools:
 - Leave the changes unstaged for the user to review with the main session agent.
 
 ## Process
+- Before you start, read `AGENTS.md` at the root of the workspace. It holds the session rules of the workspace. The brief gives the workspace path.
 - Before you implement, break the work into discrete chunks. When a proposal document drives the work, its implementation steps are the chunks.
 - Implement one chunk at a time. Verify each chunk before you start the next.
 - When you find a major misconception or error in the proposal document, record it and its effect on the objective.

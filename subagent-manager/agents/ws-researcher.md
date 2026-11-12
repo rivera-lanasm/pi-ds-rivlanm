@@ -38,6 +38,7 @@ Pick the path that fits. Record the path in the document.
 
 ## Process
 
+- Before you start, read `AGENTS.md` at the root of the workspace. It holds the session rules of the workspace. The brief gives the workspace path.
 - Read the related documents in the research directory before you start. Earlier documents are your context: build on their findings and cite them as sources.
 - State the question as one sentence before you start. If the question needs more than one sentence, call agent_pause and ask the maintainer to narrow it.
 - Plan the findings before you write: what the reader must learn, and in what order. Findings are discrete, follow a logical order, and build on each other.
