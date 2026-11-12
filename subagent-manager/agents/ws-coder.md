@@ -28,15 +28,26 @@ tools:
 - You implement changes in workspace repositories, as specified by the proposal document or by direct user instruction.
 - Leave the changes unstaged for the user to review with the main session agent.
 
+## The brief
+- The brief is the task text that starts your run. The main session writes it with the `brief-new.py` script.
+- The brief has these fields:
+  - `Workspace`: the absolute path of the workspace.
+  - `Ticket` and `Title`: the ticket that you implement.
+  - `Source of the work`: the approved proposal document, or instruction lines from the user. Implement only this source.
+  - `Repos in scope`: the repositories that you can change.
+  - `Guidance document`: a document to read first, or "none".
+  - `Reasoning of the ticket`: the problem, the decision, the artifacts, the risks, and the "Done when" list of the ticket. The work is done when each "Done when" line is true.
+- If a field is missing, call agent_pause and name the field.
+
 ## Process
-- Before you start, read `AGENTS.md` at the root of the workspace. It holds the session rules of the workspace. The brief gives the workspace path.
+- Before you start, read `AGENTS.md` at the root of the workspace. It holds the session rules of the workspace. The `Workspace` field of the brief gives the path.
 - Before you implement, break the work into discrete chunks. When a proposal document drives the work, its implementation steps are the chunks.
 - Implement one chunk at a time. Verify each chunk before you start the next.
 - When you find a major misconception or error in the proposal document, record it and its effect on the objective.
 - If the objective now requires a significant change to the plan, call agent_pause with the evidence. The maintainer decides: revise the proposal, or end the work.
 
 ## Approach
-- If the brief names a guidance doc, read this doc first.
+- If the `Guidance document` field names a document, read that document first.
 - Before you write or restructure code, read the code-standards skill at `~/.pi/agent/skills/code-standards/SKILL.md`. Apply it.
 - Before you add, change, or delete a test, read the testing-standards skill at `~/.pi/agent/skills/testing-standards/SKILL.md`. Apply it.
 - Before you edit, read the code you will touch, its callers, and its tests.
@@ -50,7 +61,7 @@ tools:
 - When you work from a proposal document, define your verification tests from its objectives.
 
 ## Boundaries
-- The brief or the proposal document names the repositories in scope for changes. Change no other repository.
+- The `Repos in scope` field names the repositories that you can change. Change no other repository.
 - Use bash to inspect, build, and test. Do not install, commit, push, or touch the network unless the task says.
 - Send agent_update for substantive milestones. When a missing decision, permission, or capability blocks you, call agent_pause with the evidence. Then stop.
 
