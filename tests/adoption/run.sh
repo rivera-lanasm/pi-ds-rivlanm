@@ -76,7 +76,7 @@ jq -s '
   (.[1] | {defaultProvider, defaultModel, theme} | with_entries(select(.value != null))) as $local
   | (.[0].packages // []) as $repo_pkgs
   | (.[1].packages // []) as $live_pkgs
-  | .[0] + $local
+  | .[1] + .[0] + $local
   | .packages = ($repo_pkgs + ($live_pkgs | map(select(
       . as $p | ($repo_pkgs | map(split("@")[0]) | index($p | split("@")[0])) | not))))
 ' "$REPO/settings.json" "$PI_AGENT/settings.json" > /tmp/settings.merged

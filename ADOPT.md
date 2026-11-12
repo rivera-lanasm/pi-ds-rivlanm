@@ -93,26 +93,45 @@ The content of the user is never dropped.
 If the user adopted the standards alone, skip this step. The settings
 of the repo exist to pin the extension of the workflow.
 
-If `~/.pi/agent/settings.json` exists, merge it with the file of the
-repo. The repo file wins, except three local keys (`defaultProvider`,
-`defaultModel`, `theme`). The `packages` lists merge, and the entry of
-the repo wins per package name:
+If `~/.pi/agent/settings.json` does not exist, copy the file of the
+repo. Then go to step 5.
+
+If the file exists, merge the two files. The merge has three rules:
+
+- Each key of the user stays.
+- If the two files set the same key, the value of the repo wins. Three
+  keys are exceptions: for `defaultProvider`, `defaultModel`, and
+  `theme`, the value of the user wins.
+- The `packages` lists merge. If the two lists name the same package,
+  the entry of the repo wins.
+
+Write the merged file to a temporary path:
 
 ```sh
-cp ~/.pi/agent/settings.json ~/.pi/agent/settings.json.bak
 jq -s '
   (.[1] | {defaultProvider, defaultModel, theme} | with_entries(select(.value != null))) as $local
   | (.[0].packages // []) as $repo_pkgs
   | (.[1].packages // []) as $live_pkgs
-  | .[0] + $local
+  | .[1] + .[0] + $local
   | .packages = ($repo_pkgs + ($live_pkgs | map(select(
       . as $p | ($repo_pkgs | map(split("@")[0]) | index($p | split("@")[0])) | not))))
-' ~/pi-harness/settings.json ~/.pi/agent/settings.json > /tmp/settings.merged \
-  && mv /tmp/settings.merged ~/.pi/agent/settings.json
+' ~/pi-harness/settings.json ~/.pi/agent/settings.json > /tmp/settings.merged
 ```
 
-If the file does not exist yet, copy the file of the repo instead. In
-both cases, `auth.json` is never touched.
+Show the user each value that changes:
+
+```sh
+diff <(jq -S . ~/.pi/agent/settings.json) <(jq -S . /tmp/settings.merged)
+```
+
+When the user approves, make a backup. Then install the merged file:
+
+```sh
+cp ~/.pi/agent/settings.json ~/.pi/agent/settings.json.bak
+mv /tmp/settings.merged ~/.pi/agent/settings.json
+```
+
+No step in this guide changes `auth.json`.
 
 ## 5. Install the extensions (workflow only)
 
