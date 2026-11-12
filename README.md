@@ -49,8 +49,8 @@ Five skills. Each skill works alone.
 | `code-standards` | Functional-first design, docstrings, separation of concerns, naming; per-language guides and lint runners for Python, Go, Java, TypeScript |
 | `testing-standards` | Decides whether a test earns a permanent place: it must catch a named failure |
 | `simple-english` | Writes and rewrites prose with Simplified Technical English and Strunk & White rules |
-| `d2-diagrams` | Authors D2 diagrams that convey one idea each. Needs the `d2` tool |
-| `show-me` | Explains a topic visually: call trees, component trees, diffs. Vendored from its upstream |
+| `d2-diagrams` | Authors D2 diagrams that convey one idea each. The first choice for a diagram in a document. Needs the `d2` tool |
+| `show-me` | Explains a topic visually in the conversation: call trees, component trees, diffs. Used by the main session. Vendored from its upstream |
 
 ### The workflow
 
@@ -75,7 +75,7 @@ repositories of one body of work.
 | `workspace` skill | Creates and manages a workspace: tickets, proposal documents, research documents, conclusion documents, a scratch area, and the repositories | `simple-english`, `show-me` |
 | `socratic-review` skill | Works through a technical document with you, one question at a time | — |
 | `ws-architect` agent | Drafts the proposal document | `d2-diagrams`, `simple-english` |
-| `ws-researcher` agent | Writes the research document | `simple-english`, `d2-diagrams`, `show-me` |
+| `ws-researcher` agent | Writes the research document | `simple-english`, `d2-diagrams` |
 | `ws-coder` agent | Implements the work | `code-standards`, `testing-standards` |
 
 The workflow needs Taskwarrior, pandoc, jq, and pi-subagent-manager.

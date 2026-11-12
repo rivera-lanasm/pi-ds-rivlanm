@@ -52,3 +52,8 @@ Read the conclusion, not the transcript.
 | Reviewing a technical document with the maintainer, or helping them understand one, such as a proposal or plan | `socratic-review` |
 | Explaining a topic visually, when another skill or the maintainer asks for it | `show-me` (manual only: read `~/.pi/agent/skills/show-me/SKILL.md`) |
 | Drawing a diagram that carries one idea, for a document, a proposal, or a research finding | `d2-diagrams` |
+
+**D2 first for documents.** The `show-me` skill is for the main session: it
+explains a topic to the maintainer in the conversation. The `d2-diagrams`
+skill is the first choice for each diagram in a document, and for each
+diagram that a subagent authors.
