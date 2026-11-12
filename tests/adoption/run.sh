@@ -112,7 +112,12 @@ ok "settings keep the user keys, the user extensions, and the repo pin"
 [ -f "$PI_AGENT/subagent-manager/agents/ws-coder.md" ] || fail "ws-coder.md missing"
 [ -f "$PI_AGENT/subagent-manager/agents/ws-architect.md" ] || fail "ws-architect.md missing"
 [ -f "$PI_AGENT/subagent-manager/agents/ws-researcher.md" ] || fail "ws-researcher.md missing"
-ok "custom agents (ws-coder, ws-architect, ws-researcher) installed"
+for f in "$PI_AGENT"/subagent-manager/agents/ws-*.md; do
+    icon="$(sed -n "s/^icon: '\(.*\)'$/\1/p" "$f")"
+    printf '%s' "$icon" | LC_ALL=C.UTF-8 grep -qP '^\p{Co}$' \
+        || fail "$(basename "$f"): icon is not a single private-use glyph; the extension drops the agent"
+done
+ok "custom agents (ws-coder, ws-architect, ws-researcher) installed with valid icons"
 [ -d "$PI_AGENT/npm/node_modules/pi-subagent-manager" ] \
     || fail "pi-subagent-manager not installed"
 ok "pi-subagent-manager installed at the pinned version"

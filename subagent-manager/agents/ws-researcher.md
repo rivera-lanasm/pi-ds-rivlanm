@@ -1,6 +1,6 @@
 ---
 name: ws-researcher
-icon: ''
+icon: '󰍜'
 description: Research one bounded question and write one research document into the workspace research directory. Evidence-backed local and remote research with source verification and decision-ready findings.
 modelSuggestions:
   - opus-5.5
