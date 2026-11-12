@@ -162,7 +162,8 @@ the fork point and navigates back; the agent cannot do these steps.
 **Close out every ticket.** Finish the conclusion document: read
 `references/conclusion-format.md`. Run `tw-close.py` to link the document
 to the ticket. When the work used a context fork, tell the user to
-navigate back to the fork point.
+navigate back to the fork point and to send the return line. Read
+`references/context-forking.md`.
 
 **Report the state with fixed groups.** Started, ready, blocked, done in
 the last 7 days. Write the summary with the `simple-english` rules.
