@@ -11,8 +11,8 @@ skeleton and never overwrites an existing file. Without --init the script
 checks the workspace against the layout and against workspace.toml.
 
 Usage:
-    tw-check [path]          check the workspace (default: current directory)
-    tw-check --init [path]   create the skeleton, then check
+    tw-check.py [path]          check the workspace (default: current directory)
+    tw-check.py --init [path]   create the skeleton, then check
 """
 
 import re
@@ -27,7 +27,7 @@ import tomllib
 
 DIRECTORIES = ("research", "proposals", "conclusions", "scratch", "repos")
 
-# Keep in sync with tw-close.
+# Keep in sync with tw-close.py.
 REQUIRED_SECTIONS = (
     "Goal",
     "Progress",
@@ -277,7 +277,7 @@ def main(argv: Sequence[str]) -> int:
     init = "--init" in argv
     arguments = [argument for argument in argv if argument != "--init"]
     if len(arguments) > 1:
-        print("usage: tw-check [--init] [path]", file=sys.stderr)
+        print("usage: tw-check.py [--init] [path]", file=sys.stderr)
         return 2
     root = Path(arguments[0]).resolve() if arguments else Path.cwd()
     if init:

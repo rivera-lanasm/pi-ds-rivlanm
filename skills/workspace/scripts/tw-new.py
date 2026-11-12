@@ -11,8 +11,8 @@ sections, stored as one annotation on the task. Nothing is created unless the
 whole ticket is valid and every dependency exists.
 
 Usage:
-    tw-new < ticket.json     create the task, print its UUID
-    tw-new --schema          print the ticket JSON Schema
+    tw-new.py < ticket.json     create the task, print its UUID
+    tw-new.py --schema          print the ticket JSON Schema
 """
 
 import json

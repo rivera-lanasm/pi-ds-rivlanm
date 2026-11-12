@@ -12,7 +12,7 @@ session.
 - Refer to a task by its UUID, or by the first 8 characters of the UUID.
 - Do not use the short numeric IDs across steps. Taskwarrior renumbers them
   when a task is done.
-- Do not create a task with `task add` or `task annotate`. Use `tw-new`.
+- Do not create a task with `task add` or `task annotate`. Use `tw-new.py`.
 
 ## Find the project name
 
@@ -34,15 +34,15 @@ commands below, `<p>` is the project name.
 1. Load the `simple-english` skill. Write every bullet with its rules.
 2. Read the ticket schema:
    ```bash
-   ~/.pi/agent/skills/workspace/scripts/tw-new --schema
+   ~/.pi/agent/skills/workspace/scripts/tw-new.py --schema
    ```
 3. Write the ticket as JSON. Start from the template in
    `assets/ticket-template.json` and replace each value. Never send the
-   template to `tw-new` unchanged. Each bullet is one line of 3 to 200
+   template to `tw-new.py` unchanged. Each bullet is one line of 3 to 200
    characters.
-4. Send the JSON to `tw-new` on stdin:
+4. Send the JSON to `tw-new.py` on stdin:
    ```bash
-   ~/.pi/agent/skills/workspace/scripts/tw-new <<'EOF'
+   ~/.pi/agent/skills/workspace/scripts/tw-new.py <<'EOF'
    {
      "title": "Add text search to notes",
      "project": "notes.search",
@@ -59,13 +59,13 @@ commands below, `<p>` is the project name.
    }
    EOF
    ```
-5. If `tw-new` exits with 0, it prints the UUID of the new task. Keep this
+5. If `tw-new.py` exits with 0, it prints the UUID of the new task. Keep this
    UUID.
-6. If `tw-new` exits with 1, it prints one line for each error. Each line
+6. If `tw-new.py` exits with 1, it prints one line for each error. Each line
    gives the field and the rule. Correct the JSON and send it again.
-   `tw-new` creates no task when it finds an error.
+   `tw-new.py` creates no task when it finds an error.
 
-`depends` holds the UUIDs of tasks that must be done first. `tw-new` stops if a
+`depends` holds the UUIDs of tasks that must be done first. `tw-new.py` stops if a
 UUID does not match a task.
 
 ## Start and finish work
@@ -75,7 +75,7 @@ UUID does not match a task.
 
 ## Replace a ticket
 
-- Create the new ticket with `tw-new`. Write the new decision and its
+- Create the new ticket with `tw-new.py`. Write the new decision and its
   reasons. Follow "Create a ticket" above.
 - Close the old ticket as canceled:
   `task rc.confirmation=off <old-uuid> delete`
@@ -117,7 +117,7 @@ Run the close script with the ticket UUID and, when the document is not at
 the default path, the document path:
 
 ```bash
-~/.pi/agent/skills/workspace/scripts/tw-close <uuid> [document]
+~/.pi/agent/skills/workspace/scripts/tw-close.py <uuid> [document]
 ```
 
 The default document is `conclusions/<ticket-id>.md`. The script makes sure

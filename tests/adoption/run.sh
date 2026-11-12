@@ -131,10 +131,10 @@ apt-get install -y --no-install-recommends taskwarrior pandoc >/dev/null 2>&1
 mkdir -p /root/.task
 printf 'data.location=/root/.task\n' > /root/.taskrc
 WS=/tmp/ws-happy
-"$REPO/skills/workspace/scripts/tw-check" --init "$WS" >/dev/null
+"$REPO/skills/workspace/scripts/tw-check.py" --init "$WS" >/dev/null
 printf 'project = "happy"\n' > "$WS/workspace.toml"
 sed -i 's/^Project: .*/Project: happy/' "$WS/AGENTS.md"
-UUID="$(cat <<'JSON' | "$REPO/skills/workspace/scripts/tw-new"
+UUID="$(cat <<'JSON' | "$REPO/skills/workspace/scripts/tw-new.py"
 {
   "title": "Prove the happy path in the container",
   "project": "happy.path",
@@ -148,8 +148,8 @@ UUID="$(cat <<'JSON' | "$REPO/skills/workspace/scripts/tw-new"
 }
 JSON
 )"
-[ -n "$UUID" ] || fail "tw-new created no ticket"
-ok "tw-new created ticket ${UUID:0:8}"
+[ -n "$UUID" ] || fail "tw-new.py created no ticket"
+ok "tw-new.py created ticket ${UUID:0:8}"
 task rc.verbose=nothing project:happy.path export | jq -e 'length == 1' >/dev/null \
     || fail "ticket not in the task database"
 ok "ticket lives in the task database"
@@ -184,19 +184,19 @@ Status: done
 
 - None
 MD
-"$REPO/skills/workspace/scripts/tw-close" "$UUID" "$WS/conclusions/$TICKET_ID.md" >/dev/null \
-    || fail "tw-close failed"
-ok "tw-close linked the conclusion document"
+"$REPO/skills/workspace/scripts/tw-close.py" "$UUID" "$WS/conclusions/$TICKET_ID.md" >/dev/null \
+    || fail "tw-close.py failed"
+ok "tw-close.py linked the conclusion document"
 printf '# Proposal %s\n\nOne design, proved in a container.\n' "$TICKET_ID" \
     > "$WS/proposals/$TICKET_ID.md"
-"$REPO/skills/workspace/scripts/render" "$WS/proposals/$TICKET_ID.md" >/dev/null
+"$REPO/skills/workspace/scripts/render.sh" "$WS/proposals/$TICKET_ID.md" >/dev/null
 [ -f "$WS/proposals/$TICKET_ID.html" ] || fail "render produced no HTML"
 grep -q "sourceCode.diff" "$WS/proposals/$TICKET_ID.html" \
     || fail "render HTML lacks the harness header styles"
 ok "render produced styled HTML for the proposal document"
-"$REPO/skills/workspace/scripts/tw-check" "$WS" | tail -1 | grep -q "0 errors" \
-    || fail "tw-check reported errors on the happy workspace"
-ok "tw-check reports zero errors on the workspace"
+"$REPO/skills/workspace/scripts/tw-check.py" "$WS" | tail -1 | grep -q "0 errors" \
+    || fail "tw-check.py reported errors on the happy workspace"
+ok "tw-check.py reports zero errors on the workspace"
 
 echo
 echo "ADOPTION TEST PASSED"

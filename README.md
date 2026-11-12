@@ -58,7 +58,7 @@ The workflow takes one item of work from a ticket to a recorded result.
 It runs in a workspace: one directory that holds the documents and the
 repositories of one body of work.
 
-1. You define a ticket. The `tw-new` script validates the ticket and
+1. You define a ticket. The `tw-new.py` script validates the ticket and
    creates it in Taskwarrior.
 2. If the work needs facts first, the `ws-researcher` agent writes a research
    document.
@@ -67,7 +67,7 @@ repositories of one body of work.
 4. You settle the design in a socratic review, one question at a time.
 5. The `ws-coder` agent implements the approved proposal. You can also do the work
    in the main session.
-6. A conclusion document records the result. The `tw-close` script
+6. A conclusion document records the result. The `tw-close.py` script
    links the document to the ticket.
 
 | Part | Purpose | Reads these standards |

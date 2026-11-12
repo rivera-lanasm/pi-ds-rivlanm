@@ -199,8 +199,8 @@ idioms of one language, read the matching reference and use the runner:
 
 | Language | Reference | Runner |
 |---|---|---|
-| Python (ruff, uv) | `references/python.md` | `scripts/lint-python` |
-| Go (gofmt, vet, golangci-lint) | `references/go.md` | `scripts/lint-go` |
+| Python (ruff, uv) | `references/python.md` | `scripts/lint-python.sh` |
+| Go (gofmt, vet, golangci-lint) | `references/go.md` | `scripts/lint-go.sh` |
 | Java (Spotless, Checkstyle, Error Prone) | `references/java.md` | none — linting is build-tool bound |
 | TypeScript / Svelte (ESLint, Biome) | `references/typescript.md` | none yet |
 

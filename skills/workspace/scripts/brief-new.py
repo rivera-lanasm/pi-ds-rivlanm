@@ -16,8 +16,8 @@ For ws-architect and ws-coder, the title and the reasoning come from the
 ticket in Taskwarrior. The input gives only the ticket UUID.
 
 Usage:
-    brief-new <agent> < brief.json   print the brief text
-    brief-new --schema <agent>       print the JSON Schema of the input
+    brief-new.py <agent> < brief.json   print the brief text
+    brief-new.py --schema <agent>       print the JSON Schema of the input
 
 <agent> is ws-researcher, ws-architect, or ws-coder.
 """
@@ -57,7 +57,7 @@ ResearchName = Annotated[
 TASK = ("task", "rc.confirmation=off", "rc.verbose=nothing")
 # A sentence end that is followed by more text.
 SENTENCE_BREAK = re.compile(r"[.?!]\s+\S")
-# First line of the reasoning annotation that tw-new writes.
+# First line of the reasoning annotation that tw-new.py writes.
 REASONING_START = "## Problem"
 
 
@@ -274,7 +274,7 @@ def read_ticket(uuid: UUID) -> Ticket:
     """Read one pending ticket from Taskwarrior.
 
     Raises ValueError when no task has the UUID, when the task is not pending,
-    or when the task has no reasoning annotation from tw-new. Raises
+    or when the task has no reasoning annotation from tw-new.py. Raises
     subprocess.CalledProcessError when `task` exits non-zero.
     """
     result = subprocess.run(
@@ -296,7 +296,7 @@ def read_ticket(uuid: UUID) -> Ticket:
         if note["description"].startswith(REASONING_START)
     ]
     if not bodies:
-        raise ValueError(f"ticket: task {uuid} has no reasoning from tw-new")
+        raise ValueError(f"ticket: task {uuid} has no reasoning from tw-new.py")
     return Ticket(uuid=uuid, title=task["description"], reasoning=bodies[0])
 
 
@@ -409,7 +409,7 @@ def main(argv: Sequence[str]) -> int:
     names = arguments[1:] if want_schema else arguments
     if len(names) != 1 or names[0] not in MODELS:
         known = ", ".join(MODELS)
-        print(f"usage: brief-new [--schema] <agent>; agents: {known}", file=sys.stderr)
+        print(f"usage: brief-new.py [--schema] <agent>; agents: {known}", file=sys.stderr)
         return 2
     model = MODELS[names[0]]
     if want_schema:

@@ -75,7 +75,7 @@ Ticket: <uuid>
 Render the document after every change:
 
 ```bash
-~/.pi/agent/skills/workspace/scripts/render proposals/<ticket-id>.md
+~/.pi/agent/skills/workspace/scripts/render.sh proposals/<ticket-id>.md
 ```
 
 The markdown is the source. The maintainer reads the HTML.

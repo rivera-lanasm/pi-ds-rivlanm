@@ -10,7 +10,7 @@ ticket with the document path. It does not mark the ticket done. It does not
 navigate the pi session. Both steps stay with the user.
 
 Usage:
-    tw-close <uuid> [document]
+    tw-close.py <uuid> [document]
 
 The document defaults to conclusions/<uuid-prefix>.md in the current
 directory. <uuid-prefix> is the first 8 characters of the UUID.
@@ -28,7 +28,7 @@ from uuid import UUID
 # Every call: never prompt for confirmation, never print taskrc chatter.
 TASK = ("task", "rc.confirmation=off", "rc.verbose=nothing")
 
-# Keep in sync with tw-check.
+# Keep in sync with tw-check.py.
 REQUIRED_SECTIONS = (
     "Goal",
     "Progress",
@@ -152,7 +152,7 @@ def next_steps(uuid: UUID) -> str:
 def main(argv: Sequence[str]) -> int:
     """Check the ticket and the document, then annotate the ticket."""
     if len(argv) not in (1, 2):
-        print("usage: tw-close <uuid> [document]", file=sys.stderr)
+        print("usage: tw-close.py <uuid> [document]", file=sys.stderr)
         return 2
     try:
         uuid = parse_uuid(argv[0])

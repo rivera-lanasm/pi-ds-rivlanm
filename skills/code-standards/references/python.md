@@ -67,6 +67,6 @@ Fix warnings; do not silence them. A `# noqa` carries the rule code and a reason
 mypy or pyright in strict mode. Pydantic validates untrusted input at the
 boundary. Frozen dataclasses and `TypedDict` carry data.
 
-**Runner:** `scripts/lint-python` in this skill runs the pinned check and
+**Runner:** `scripts/lint-python.sh` in this skill runs the pinned check and
 format pass, with `uvx` as a fallback when the project has no dev dependencies
 installed.

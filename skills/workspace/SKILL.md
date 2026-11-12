@@ -12,7 +12,7 @@ description: |
   "research", "scratch", "repo", "task", "ticket", "todo", "backlog",
   "what is next", "what is blocked", "status of the work", "explain
   this task", "proposal", "fork the context", "conclusion document",
-  or "close out". Tickets are created only through the bundled tw-new
+  or "close out". Tickets are created only through the bundled tw-new.py
   script, which validates the ticket before it creates the task.
 ---
 
@@ -30,7 +30,7 @@ title, plus one annotation that holds the reasoning.
 | Part | Purpose | Tracking |
 |---|---|---|
 | `AGENTS.md` | The session rules for the workspace | tracked |
-| `workspace.toml` | The declared parts that `tw-check` reads | tracked |
+| `workspace.toml` | The declared parts that `tw-check.py` reads | tracked |
 | `research/` | One research document for each research question | tracked |
 | `proposals/` | One proposal document for each ticket that needs a design | tracked |
 | `conclusions/` | One conclusion document for each ticket | tracked |
@@ -45,11 +45,11 @@ full rules.
 ## Set up a workspace
 
 - To set up a new workspace, run
-  `~/.pi/agent/skills/workspace/scripts/tw-check --init <path>`. The script
+  `~/.pi/agent/skills/workspace/scripts/tw-check.py --init <path>`. The script
   creates the skeleton and never overwrites an existing file.
 - Fill in the stubs: the workspace `AGENTS.md` and `workspace.toml`.
 - To make sure that a workspace is complete, run
-  `~/.pi/agent/skills/workspace/scripts/tw-check <path>`.
+  `~/.pi/agent/skills/workspace/scripts/tw-check.py <path>`.
 
 Read `references/workspace.md` for the layout and the lifecycle.
 
@@ -66,7 +66,7 @@ context = ["repo-two"]
 
 A work repo is a repository that the work changes. A context repo is a
 repository that the work reads only: helpers, examples, upstream sources.
-Run `tw-check` after each change.
+Run `tw-check.py` after each change.
 
 ## Use the scratch directory
 
@@ -78,17 +78,17 @@ When a scratch script earns permanence, move it into a work repo.
 
 - Formulate the question with the user. One sentence: the `ws-researcher` agent pauses when a question needs more.
 - Assemble the context set with the user: the repositories, the documents, and the pages the research reads. Include earlier research documents when they help.
-- Emit the `ws-researcher` agent with a brief from `brief-new`: the question, the context set, the workspace path, and the document name. Read "Start a subagent". The agent writes one document into `research/` and nothing else. Its filename shows its topic and its relations.
+- Emit the `ws-researcher` agent with a brief from `brief-new.py`: the question, the context set, the workspace path, and the document name. Read "Start a subagent". The agent writes one document into `research/` and nothing else. Its filename shows its topic and its relations.
 - At the user's discretion, run the socratic review against the research document with the main session.
 
 ## The tools
 
 | Tool | What it does here | Its parts |
 |---|---|---|
-| Taskwarrior | Holds the tickets of every workspace in one database (`~/.task/`). | The `task` CLI; the boundary scripts `tw-new` and `tw-close`; the jq queries. |
-| The tw scripts | `tw-new` validates and creates tickets. `tw-close` closes out a ticket. `tw-check` sets up and checks the workspace. | Bundled with the skill under `scripts/`. |
-| brief-new | Validates and writes the brief that starts a `ws-` agent. | Bundled with the skill under `scripts/`. |
-| render | Renders a workspace markdown document to styled HTML. | Bundled with the skill under `scripts/`. |
+| Taskwarrior | Holds the tickets of every workspace in one database (`~/.task/`). | The `task` CLI; the boundary scripts `tw-new.py` and `tw-close.py`; the jq queries. |
+| The tw scripts | `tw-new.py` validates and creates tickets. `tw-close.py` closes out a ticket. `tw-check.py` sets up and checks the workspace. | Bundled with the skill under `scripts/`. |
+| brief-new.py | Validates and writes the brief that starts a `ws-` agent. | Bundled with the skill under `scripts/`. |
+| render.sh | Renders a workspace markdown document to styled HTML. | Bundled with the skill under `scripts/`. |
 | pi-subagent-manager | Provides the subagents that work in the workspace. | The `ws-architect` agent drafts proposal documents. The `ws-coder` agent implements self-contained work. The `ws-researcher` agent writes research documents. |
 
 ## Start a subagent
@@ -97,19 +97,19 @@ A brief is the task text that the main session writes when it starts a
 subagent. The agent file gives the standing instructions of the agent.
 The brief gives the work of one run.
 
-The `brief-new` script writes the brief of each `ws-` agent. The task of
-a `ws-` agent is always the output of `brief-new`, unchanged.
+The `brief-new.py` script writes the brief of each `ws-` agent. The task of
+a `ws-` agent is always the output of `brief-new.py`, unchanged.
 
 1. Read the fields of the agent:
    ```bash
-   ~/.pi/agent/skills/workspace/scripts/brief-new --schema <agent>
+   ~/.pi/agent/skills/workspace/scripts/brief-new.py --schema <agent>
    ```
 2. Write the brief as JSON. Take each value from the ticket or from the
    conversation. If a field has no value, ask the user. Do not invent a
    value.
 3. Send the JSON to the script on stdin:
    ```bash
-   ~/.pi/agent/skills/workspace/scripts/brief-new <agent> <<'EOF'
+   ~/.pi/agent/skills/workspace/scripts/brief-new.py <agent> <<'EOF'
    { ... }
    EOF
    ```
@@ -160,7 +160,7 @@ context fork. Read "Pick the execution mode" in
 the fork point and navigates back; the agent cannot do these steps.
 
 **Close out every ticket.** Finish the conclusion document: read
-`references/conclusion-format.md`. Run `tw-close` to link the document
+`references/conclusion-format.md`. Run `tw-close.py` to link the document
 to the ticket. When the work used a context fork, tell the user to
 navigate back to the fork point.
 

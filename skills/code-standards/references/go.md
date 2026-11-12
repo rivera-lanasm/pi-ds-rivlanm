@@ -59,7 +59,7 @@ go vet ./...
 golangci-lint run           # when the project carries it
 ```
 
-**Runner:** `scripts/lint-go` in this skill runs gofmt and vet, and
+**Runner:** `scripts/lint-go.sh` in this skill runs gofmt and vet, and
 golangci-lint when it is on PATH.
 
 ## Resources
