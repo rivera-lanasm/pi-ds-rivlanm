@@ -199,4 +199,60 @@ ok "render produced styled HTML for the proposal document"
 ok "tw-check.py reports zero errors on the workspace"
 
 echo
+echo "== 8. brief-new.py: the briefs that start the ws- agents =="
+git init -q "$WS/repos/notes-app"
+printf 'project = "happy"\n\n[repos]\nwork = ["notes-app"]\n' > "$WS/workspace.toml"
+BRIEF="$REPO/skills/workspace/scripts/brief-new.py"
+"$BRIEF" --schema ws-researcher > /dev/null || fail "--schema ws-researcher failed"
+RESEARCHER_BRIEF="$($BRIEF ws-researcher <<JSON
+{
+  "workspace": "$WS",
+  "question": "How does the workspace ticket flow work end to end",
+  "document": "auth-1.md",
+  "context": ["The workspace skill in the harness repo"]
+}
+JSON
+)" || fail "brief-new.py rejected a valid researcher brief"
+printf '%s' "$RESEARCHER_BRIEF" | grep -q "Question: How does the workspace ticket flow" \
+    || fail "the researcher brief does not carry the question"
+ok "ws-researcher brief: validated against the workspace and rendered"
+ARCHITECT_BRIEF="$($BRIEF ws-architect <<JSON
+{
+  "workspace": "$WS",
+  "ticket": "$UUID",
+  "work_repos": ["notes-app"]
+}
+JSON
+)" || fail "brief-new.py rejected a valid architect brief"
+printf '%s' "$ARCHITECT_BRIEF" | grep -q "Ticket: $TICKET_ID" \
+    || fail "the architect brief does not carry the ticket"
+printf '%s' "$ARCHITECT_BRIEF" | grep -q "Title: Prove the happy path in the container" \
+    || fail "the architect brief does not carry the ticket title"
+ok "ws-architect brief: read the ticket and rendered its title"
+if printf '%s' '{"workspace": "'"$WS"'", "question": "Two sentences. This one too.", "document": "x-1.md", "context": ["The repo"]}' \
+    | "$BRIEF" ws-researcher 2>/tmp/brief.err; then
+    fail "brief-new.py accepted a two-sentence question"
+fi
+grep -q "more than one sentence" /tmp/brief.err || fail "wrong error for the two-sentence question"
+touch "$WS/research/auth-1.md"
+if "$BRIEF" ws-researcher <<JSON 2>/tmp/brief.err
+{
+  "workspace": "$WS",
+  "question": "How does the workspace ticket flow work end to end",
+  "document": "auth-1.md",
+  "context": ["The workspace skill in the harness repo"]
+}
+JSON
+then
+    fail "brief-new.py accepted an existing document"
+fi
+grep -q "already exists" /tmp/brief.err || fail "wrong error for the existing document"
+if printf '%s' '{"workspace": "'"$WS"'", "question": "Fork without a parent", "document": "bug-2.1.md", "context": ["The repo"]}' \
+    | "$BRIEF" ws-researcher 2>/tmp/brief.err; then
+    fail "brief-new.py accepted a fork without its parent document"
+fi
+grep -q "a fork needs its parent" /tmp/brief.err || fail "wrong error for the parentless fork"
+ok "brief-new.py rejects: two-sentence question, existing document, parentless fork"
+
+echo
 echo "ADOPTION TEST PASSED"
