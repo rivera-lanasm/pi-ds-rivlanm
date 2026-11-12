@@ -35,28 +35,50 @@ Diagrams in this document use the D2 theme Neutral Default.
 | `diagrams/` | — | D2 sources and renders for this README |
 | `tests/adoption/` | — | Docker test: the adoption flow, then one ticket's full life in a workspace |
 
-## The skills
+## What the harness gives you
+
+The harness holds two products: the standards and the workflow. You can
+adopt the standards alone. The workflow needs the standards.
+
+### The standards
+
+Five skills. Each skill works alone.
 
 | Skill | Purpose |
 |---|---|
-| `workspace` | Creates and manages a workspace: tickets, proposal documents, research documents, conclusion documents, a scratch area, and the repositories of one body of work |
 | `code-standards` | Functional-first design, docstrings, separation of concerns, naming; per-language guides and lint runners for Python, Go, Java, TypeScript |
-| `simple-english` | Writes and rewrites prose with Simplified Technical English and Strunk & White rules |
-| `socratic-review` | Works through a technical document with you, one question at a time |
 | `testing-standards` | Decides whether a test earns a permanent place: it must catch a named failure |
-| `d2-diagrams` | Authors D2 diagrams that convey one idea each |
+| `simple-english` | Writes and rewrites prose with Simplified Technical English and Strunk & White rules |
+| `d2-diagrams` | Authors D2 diagrams that convey one idea each. Needs the `d2` tool |
 | `show-me` | Explains a topic visually: call trees, component trees, diffs. Vendored from its upstream |
 
-The pieces depend on each other, so picking à la carte needs the map:
+### The workflow
 
-- The **architect** uses the `workspace` skill (the proposal format and
-  the ticket lifecycle), the `d2-diagrams` skill, and the
-  `simple-english` skill.
-- The **researcher** uses `simple-english`, `d2-diagrams`, and the
-  show-me formats.
-- The **coder** uses `code-standards` and `testing-standards`.
-- The **workspace** skill needs Taskwarrior, pi-subagent-manager, and
-  pandoc for the render script.
+The workflow takes one item of work from a ticket to a recorded result.
+It runs in a workspace: one directory that holds the documents and the
+repositories of one body of work.
+
+1. You define a ticket. The `tw-new` script validates the ticket and
+   creates it in Taskwarrior.
+2. If the work needs facts first, the researcher writes a research
+   document.
+3. If the ticket needs a design, the architect writes a proposal
+   document.
+4. You settle the design in a socratic review, one question at a time.
+5. The coder implements the approved proposal. You can also do the work
+   in the main session.
+6. A conclusion document records the result. The `tw-close` script
+   links the document to the ticket.
+
+| Part | Purpose | Reads these standards |
+|---|---|---|
+| `workspace` skill | Creates and manages a workspace: tickets, proposal documents, research documents, conclusion documents, a scratch area, and the repositories | `simple-english`, `show-me` |
+| `socratic-review` skill | Works through a technical document with you, one question at a time | — |
+| architect agent | Drafts the proposal document | `d2-diagrams`, `simple-english` |
+| researcher agent | Writes the research document | `simple-english`, `d2-diagrams`, `show-me` |
+| coder agent | Implements the work | `code-standards`, `testing-standards` |
+
+The workflow needs Taskwarrior, pandoc, jq, and pi-subagent-manager.
 
 ## Adopt the harness
 
