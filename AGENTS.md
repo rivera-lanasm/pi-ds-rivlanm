@@ -49,3 +49,4 @@ Read the conclusion, not the transcript.
 | Setting up or checking a workspace; adding repositories; research, proposal, and conclusion documents; creating, starting, finishing, or explaining tickets; context forks and close-outs | `workspace` |
 | Reviewing a technical document with the maintainer, or helping them understand one, such as a proposal or plan | `socratic-review` |
 | Explaining a topic visually, when another skill or the maintainer asks for it | `show-me` (manual only: read `~/.pi/agent/skills/show-me/SKILL.md`) |
+| Drawing a diagram that carries one idea, for a document, a proposal, or a research finding | `d2-diagrams` |

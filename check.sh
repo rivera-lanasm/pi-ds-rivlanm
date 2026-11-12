@@ -24,14 +24,14 @@ check git  "repo operations"                    "your package manager"
 check uv   "update.py, rebuild.py, workspace scripts" "curl -LsSf https://astral.sh/uv/install.sh | sh"
 check node "pi itself"                          "https://nodejs.org"
 check npm  "pi package installs"                "installed with node"
-check rg   "pi file search"                     "your package manager (ripgrep)"
-check jq   "settings merge (ADOPT.md) and the workspace skill" "your package manager"
+check rg   "pi file search"                     "brew install ripgrep, or your package manager"
+check jq   "settings merge (ADOPT.md) and the workspace skill" "brew install jq, or your package manager"
 
 echo
 echo "Skill dependencies:"
-check task   "workspace skill"  "https://taskwarrior.org/download/"
-check d2     "d2-diagrams skill"  "curl -fsSL https://d2lang.com/install.sh | sh -s --"
-check pandoc "workspace skill (proposal documents)" "https://pandoc.org/installing.html"
+check task   "workspace skill"  "brew install taskwarrior, or https://taskwarrior.org/download/ (tested on 2.6; Homebrew ships 3.x)"
+check d2     "d2-diagrams skill"  "brew install d2, or curl -fsSL https://d2lang.com/install.sh | sh -s --"
+check pandoc "workspace skill (proposal documents)" "brew install pandoc, or https://pandoc.org/installing.html"
 
 echo
 if [ "$missing" -eq 0 ]; then

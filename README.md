@@ -47,6 +47,17 @@ Diagrams in this document use the D2 theme Neutral Default.
 | `d2-diagrams` | Authors D2 diagrams that convey one idea each |
 | `show-me` | Explains a topic visually: call trees, component trees, diffs. Vendored from its upstream |
 
+The pieces depend on each other, so picking à la carte needs the map:
+
+- The **architect** uses the `workspace` skill (the proposal format and
+  the ticket lifecycle), the `d2-diagrams` skill, and the
+  `simple-english` skill.
+- The **researcher** uses `simple-english`, `d2-diagrams`, and the
+  show-me formats.
+- The **coder** uses `code-standards` and `testing-standards`.
+- The **workspace** skill needs Taskwarrior, pi-subagent-manager, and
+  pandoc for the render script.
+
 ## Adopt the harness
 
 ```sh
@@ -64,6 +75,10 @@ without your approval.
 Run `./check.sh` to see every tool the harness expects, with the install
 command for each missing one. Missing tools disable only the skills that
 need them.
+
+Supported platforms: Linux and macOS. The container test runs Debian.
+Homebrew installs every dependency; note that Homebrew ships Taskwarrior
+3 while the test runs 2.6 — report differences you hit on 3.
 
 ## Private skills
 
