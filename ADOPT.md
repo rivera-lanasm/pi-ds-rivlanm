@@ -27,12 +27,15 @@ List the skills of the repo (`~/pi-harness/skills/`) next to the skills
 of the user (`~/.pi/agent/skills/`).
 
 - A name in both lists is a collision. Show the user the diff. If the
-  user wants the version of the repo, copy it over. If the user wants to
-  keep their version, do nothing.
+  user wants the version of the repo, replace the skill. If the user
+  wants to keep their version, do nothing.
 - A skill that exists only in the repo needs the approval of the user.
-  Copy each skill the user picks:
+  Copy each skill the user picks. When the target already exists, remove
+  it first: `cp -r` into an existing directory nests the copy, and the
+  old version stays active.
 
 ```sh
+rm -rf ~/.pi/agent/skills/<name>
 cp -r ~/pi-harness/skills/<name> ~/.pi/agent/skills/<name>
 ```
 
@@ -91,6 +94,11 @@ survives later `pi update --extensions` runs.
 
 ## 6. Install the custom agents
 
+When a file of that name already exists in
+`~/.pi/agent/subagent-manager/agents/`, show the user the diff and ask
+before you replace it. The user may have their own override for the same
+agent.
+
 ```sh
 mkdir -p ~/.pi/agent/subagent-manager/agents
 cp ~/pi-harness/subagent-manager/agents/*.md ~/.pi/agent/subagent-manager/agents/
@@ -100,8 +108,8 @@ These are the customized coder, architect, and researcher. They replace
 the shipped definitions of the same name. The pristine shipped copies
 stay in `subagent-manager/upstream/` as merge bases for `rebuild.py`.
 
-Also copy the render header, which styles the HTML renders of workspace
-documents:
+The render header styles the HTML renders of workspace documents. When
+one already exists, show the user the diff and ask first:
 
 ```sh
 cp ~/pi-harness/doc-preview-header.html ~/.pi/agent/doc-preview-header.html
@@ -111,7 +119,7 @@ cp ~/pi-harness/doc-preview-header.html ~/.pi/agent/doc-preview-header.html
 
 - pi starts without errors
 - the skills of the user and the picked skills of the repo are listed
-- pi-subagent-manager loads with the custom coder and architect
+- pi-subagent-manager loads with the custom coder, architect, and researcher
 
 ## Day to day
 
