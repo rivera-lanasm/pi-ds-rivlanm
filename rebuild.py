@@ -4,21 +4,22 @@
 # ///
 """Rebuild customized pi-subagent-manager agents after a version bump.
 
-Each file in subagent-manager/agents/ that has a sibling in
-subagent-manager/upstream/ is a customized copy of a shipped agent.
-This script three-way merges it:
+Each file subagent-manager/agents/ws-<name>.md is a fork of the shipped
+agent <name>. The ws- prefix makes the fork a separate agent type, so it
+does not replace the shipped one. A fork has its pristine shipped copy
+in subagent-manager/upstream/<name>.md. This script three-way merges it:
 
   base    subagent-manager/upstream/<name>.md   pristine, at the old pin
-  yours   subagent-manager/agents/<name>.md     your customizations
+  yours   subagent-manager/agents/ws-<name>.md  your customizations
   new     the installed package's agents/<name>.md, at the new pin
 
 Run it after you bump the pin in settings.json and manifest.toml and run
 `pi install npm:pi-subagent-manager@<new-pin>`. A clean merge refreshes
-both agents/<name>.md and upstream/<name>.md. A conflict leaves markers
-in agents/<name>.md for you to resolve; upstream/ is still refreshed, so
-do not rerun the merge — edit the markers and commit.
+both agents/ws-<name>.md and upstream/<name>.md. A conflict leaves
+markers in agents/ws-<name>.md for you to resolve; upstream/ is still
+refreshed, so do not rerun the merge — edit the markers and commit.
 
-Agents without an upstream/ sibling are fully custom and are skipped.
+Agents without an upstream/ copy are fully custom and are skipped.
 """
 
 import os
@@ -33,6 +34,19 @@ PI_AGENT = Path(os.environ.get("PI_AGENT_DIR", Path.home() / ".pi" / "agent"))
 MANIFEST = tomllib.loads((REPO / "manifest.toml").read_text())
 PACKAGE = MANIFEST["packages"]["pi-subagent-manager"]["package"]
 INSTALLED_AGENTS = PI_AGENT / "npm" / "node_modules" / PACKAGE / "agents"
+
+# Filename prefix of a fork: agents/ws-coder.md forks the shipped coder.md.
+FORK_PREFIX = "ws-"
+
+
+def shipped_name(fork_name: str) -> str:
+    """Return the filename of the shipped agent that a fork derives from.
+
+    `fork_name` is a filename such as "ws-coder.md". A name without the
+    prefix returns unchanged: such a file overrides the shipped agent of
+    the same name.
+    """
+    return fork_name.removeprefix(FORK_PREFIX)
 
 
 def merge(ours: Path, base: Path, theirs: Path) -> subprocess.CompletedProcess:
@@ -58,11 +72,12 @@ def main() -> int:
 
     conflicts = 0
     for ours in sorted(ours_dir.glob("*.md")):
-        base = base_dir / ours.name
+        shipped = shipped_name(ours.name)
+        base = base_dir / shipped
         if not base.exists():
             print(f"{ours.name}: fully custom, skipped")
             continue
-        theirs = INSTALLED_AGENTS / ours.name
+        theirs = INSTALLED_AGENTS / shipped
         if not theirs.exists():
             print(f"{ours.name}: no longer shipped upstream, skipped")
             continue
