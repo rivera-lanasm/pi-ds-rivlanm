@@ -26,7 +26,7 @@ Diagrams in this document use the D2 theme Neutral Default.
 |---|---|---|
 | `AGENTS.md`, `settings.json`, `doc-preview-header.html` | `~/.pi/agent/` | Global instructions and pi settings |
 | `skills/` | `~/.pi/agent/skills/` | Seven skills: six ours, `show-me` vendored from its upstream |
-| `subagent-manager/agents/` | `~/.pi/agent/subagent-manager/agents/` | Customized coder, architect, and researcher for pi-subagent-manager |
+| `subagent-manager/agents/` | `~/.pi/agent/subagent-manager/agents/` | `ws-coder`, `ws-architect`, and `ws-researcher`: forks of the shipped coder, architect, and researcher for the workflow |
 | `subagent-manager/upstream/` | — | Pristine shipped agents at the pinned version. Merge base for rebuilds |
 | `manifest.toml` | — | Source and pinned version of each external part |
 | `check.sh` | — | Reports missing tool dependencies, with install hints |
@@ -60,12 +60,12 @@ repositories of one body of work.
 
 1. You define a ticket. The `tw-new` script validates the ticket and
    creates it in Taskwarrior.
-2. If the work needs facts first, the researcher writes a research
+2. If the work needs facts first, the `ws-researcher` agent writes a research
    document.
-3. If the ticket needs a design, the architect writes a proposal
+3. If the ticket needs a design, the `ws-architect` agent writes a proposal
    document.
 4. You settle the design in a socratic review, one question at a time.
-5. The coder implements the approved proposal. You can also do the work
+5. The `ws-coder` agent implements the approved proposal. You can also do the work
    in the main session.
 6. A conclusion document records the result. The `tw-close` script
    links the document to the ticket.
@@ -74,9 +74,9 @@ repositories of one body of work.
 |---|---|---|
 | `workspace` skill | Creates and manages a workspace: tickets, proposal documents, research documents, conclusion documents, a scratch area, and the repositories | `simple-english`, `show-me` |
 | `socratic-review` skill | Works through a technical document with you, one question at a time | — |
-| architect agent | Drafts the proposal document | `d2-diagrams`, `simple-english` |
-| researcher agent | Writes the research document | `simple-english`, `d2-diagrams`, `show-me` |
-| coder agent | Implements the work | `code-standards`, `testing-standards` |
+| `ws-architect` agent | Drafts the proposal document | `d2-diagrams`, `simple-english` |
+| `ws-researcher` agent | Writes the research document | `simple-english`, `d2-diagrams`, `show-me` |
+| `ws-coder` agent | Implements the work | `code-standards`, `testing-standards` |
 
 The workflow needs Taskwarrior, pandoc, jq, and pi-subagent-manager.
 

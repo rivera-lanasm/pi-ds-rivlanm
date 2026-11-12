@@ -1,5 +1,5 @@
 ---
-name: coder
+name: ws-coder
 icon: ''
 description: Own iterative implementation, refactoring, and debugging through a checked patch.
 thinkingLevel: high

@@ -1,5 +1,5 @@
 ---
-name: architect
+name: ws-architect
 icon: '󰠡'
 description: Design architecture, weigh tradeoffs, and decompose ambiguous work into verifiable plans. Ground external claims in dated primary evidence when retrieval is actually available.
 color: mdHeading

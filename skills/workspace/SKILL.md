@@ -76,9 +76,9 @@ When a scratch script earns permanence, move it into a work repo.
 
 ## Commission research
 
-- Formulate the question with the user. One sentence: the researcher pauses when a question needs more.
+- Formulate the question with the user. One sentence: the `ws-researcher` agent pauses when a question needs more.
 - Assemble the context set with the user: the repositories, the documents, and the pages the research reads. Include earlier research documents when they help.
-- Emit the researcher with the question, the context set, and the workspace path. The researcher writes one document into `research/` and nothing else. Its filename shows its topic and its relations.
+- Emit the `ws-researcher` agent with the question, the context set, and the workspace path. The agent writes one document into `research/` and nothing else. Its filename shows its topic and its relations.
 - At the user's discretion, run the socratic review against the research document with the main session.
 
 ## The tools
@@ -88,7 +88,7 @@ When a scratch script earns permanence, move it into a work repo.
 | Taskwarrior | Holds the tickets of every workspace in one database (`~/.task/`). | The `task` CLI; the boundary scripts `tw-new` and `tw-close`; the jq queries. |
 | The tw scripts | `tw-new` validates and creates tickets. `tw-close` closes out a ticket. `tw-check` sets up and checks the workspace. | Bundled with the skill under `scripts/`. |
 | render | Renders a workspace markdown document to styled HTML. | Bundled with the skill under `scripts/`. |
-| pi-subagent-manager | Provides the subagents that work in the workspace. | The architect drafts proposal documents. The coder implements self-contained work. The researcher writes research documents. |
+| pi-subagent-manager | Provides the subagents that work in the workspace. | The `ws-architect` agent drafts proposal documents. The `ws-coder` agent implements self-contained work. The `ws-researcher` agent writes research documents. |
 
 ## Tickets
 
@@ -107,7 +107,7 @@ than no ticket.
 2. Write the ticket from the conversation. Ask the user about each field
    that the conversation does not answer. Do not invent an answer.
 3. When the reasoning does not exist yet, the design comes first: the
-   architect drafts a proposal document, the socratic review settles the
+   `ws-architect` agent drafts a proposal document, the socratic review settles the
    design, and the implementation ticket follows after the user approves
    it. It depends on the design ticket, and its fields come from the
    proposal document.

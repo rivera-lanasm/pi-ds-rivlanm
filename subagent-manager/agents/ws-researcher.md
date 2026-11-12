@@ -1,5 +1,5 @@
 ---
-name: researcher
+name: ws-researcher
 icon: ''
 description: Research one bounded question and write one research document into the workspace research directory. Evidence-backed local and remote research with source verification and decision-ready findings.
 modelSuggestions:

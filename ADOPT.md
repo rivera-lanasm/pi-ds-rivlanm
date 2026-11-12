@@ -126,9 +126,11 @@ mkdir -p ~/.pi/agent/subagent-manager/agents
 cp ~/pi-harness/subagent-manager/agents/*.md ~/.pi/agent/subagent-manager/agents/
 ```
 
-These are the customized coder, architect, and researcher. They replace
-the shipped definitions of the same name. The pristine shipped copies
-stay in `subagent-manager/upstream/` as merge bases for `rebuild.py`.
+These are `ws-coder`, `ws-architect`, and `ws-researcher`: forks of the
+shipped coder, architect, and researcher for the workflow. They sit
+beside the shipped agents and replace none of them. The pristine shipped
+copies stay in `subagent-manager/upstream/` as merge bases for
+`rebuild.py`.
 
 The render header styles the HTML renders of workspace documents. When
 one already exists, show the user the diff and ask first:
@@ -142,7 +144,7 @@ cp ~/pi-harness/doc-preview-header.html ~/.pi/agent/doc-preview-header.html
 - pi starts without errors
 - the skills of the user and the picked skills of the repo are listed
 - if the user adopted the workflow, pi-subagent-manager loads with the
-  custom coder, architect, and researcher
+  `ws-coder`, `ws-architect`, and `ws-researcher` agents
 
 ## Day to day
 

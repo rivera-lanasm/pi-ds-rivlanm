@@ -109,10 +109,10 @@ jq -e '
   and (.packages | index("npm:user-own-extension") != null)
 ' "$PI_AGENT/settings.json" > /dev/null || fail "settings merge wrong"
 ok "settings keep the user keys, the user extensions, and the repo pin"
-[ -f "$PI_AGENT/subagent-manager/agents/coder.md" ] || fail "coder.md missing"
-[ -f "$PI_AGENT/subagent-manager/agents/architect.md" ] || fail "architect.md missing"
-[ -f "$PI_AGENT/subagent-manager/agents/researcher.md" ] || fail "researcher.md missing"
-ok "custom agents (coder, architect, researcher) installed"
+[ -f "$PI_AGENT/subagent-manager/agents/ws-coder.md" ] || fail "ws-coder.md missing"
+[ -f "$PI_AGENT/subagent-manager/agents/ws-architect.md" ] || fail "ws-architect.md missing"
+[ -f "$PI_AGENT/subagent-manager/agents/ws-researcher.md" ] || fail "ws-researcher.md missing"
+ok "custom agents (ws-coder, ws-architect, ws-researcher) installed"
 [ -d "$PI_AGENT/npm/node_modules/pi-subagent-manager" ] \
     || fail "pi-subagent-manager not installed"
 ok "pi-subagent-manager installed at the pinned version"
