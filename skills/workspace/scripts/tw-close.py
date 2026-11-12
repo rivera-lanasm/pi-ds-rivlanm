@@ -136,15 +136,23 @@ def annotate_ticket(uuid: UUID, ticket: TaskRecord, annotation: str) -> str:
     return f"annotated: {annotation}"
 
 
-def next_steps(uuid: UUID) -> str:
-    """Return the manual steps that close out the session for the user."""
+def next_steps(uuid: UUID, document: Path) -> str:
+    """Return the manual steps that close out the session for the user.
+
+    Step 1 gives the return line of a context fork. After the navigation the
+    agent has no record of the branch, so the user sends this line to tell it
+    that the ticket is closed out.
+    """
+    ticket_id = str(uuid)[:8]
     return "\n".join(
         [
             "next steps for the user:",
             "1. If the ticket used a context fork, open /tree. Go to the entry",
             "   before the first message of this ticket and continue from there.",
             "   When Pi offers a summary of the branch, decline it.",
-            f"2. When you are ready, mark the ticket done: task {str(uuid)[:8]} done",
+            "   Then send this line as your next message:",
+            f"   Ticket {ticket_id} is closed out. Conclusion document: {document}",
+            f"2. When you are ready, mark the ticket done: task {ticket_id} done",
         ]
     )
 
@@ -181,7 +189,7 @@ def main(argv: Sequence[str]) -> int:
     except subprocess.CalledProcessError as error:
         print(f"task failed: {error.stderr.strip()}", file=sys.stderr)
         return 1
-    print(next_steps(uuid))
+    print(next_steps(uuid, document))
     return 0
 
 
