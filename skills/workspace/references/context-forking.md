@@ -46,7 +46,7 @@ The agent advises. The user does the two navigation steps by hand.
 4. Do the work. At each natural boundary, add one dated line to the Progress
    section of the conclusion document.
 5. When the work is done, close out the ticket. Follow the "Close out a
-   ticket" section of `SKILL.md`.
+   ticket" section of `references/tickets.md`.
 6. Tell the user:
 
    > Ticket <ticket-id> is closed out. The conclusion document is at

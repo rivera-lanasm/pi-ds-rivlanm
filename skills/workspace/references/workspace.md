@@ -122,15 +122,15 @@ Without the file, the check runs only the generic checks.
 
 ## Lifecycle of one ticket
 
-1. Create the ticket. Follow the "Ask before you create" section of
-   `SKILL.md`. When the task is too large to reason out in conversation,
-   that section gives the design-ticket path.
+1. Create the ticket. Follow "The user owns creation" in the "Tickets" section
+   of `SKILL.md`. When the task is too large to reason out in
+   conversation, that section gives the design-ticket path.
 2. The user makes two decisions: does the task need a proposal document,
    and which execution mode the work uses. Read "Pick the execution mode".
 3. When the task needs a proposal document, the `ws-architect` agent drafts it. Run the socratic review against the user's questions about each section. Follow the socratic-review skill. The review ends when the user approves the document.
 4. Do the work. The user reviews the result.
 5. Close out the ticket. Follow the "Close out a ticket" section of
-   `SKILL.md`. When the work used a context fork, the user navigates back
+   `references/tickets.md`. When the work used a context fork, the user navigates back
    to the fork point.
 
 ## Pick the execution mode
