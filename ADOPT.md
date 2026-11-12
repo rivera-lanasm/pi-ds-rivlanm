@@ -62,18 +62,31 @@ No step in this guide removes them.
 
 ## 3. Adopt the global AGENTS.md
 
-`AGENTS.md` holds the global instructions: the working rules and the
-skills table. It is the keystone of the harness.
+`AGENTS.md` holds the global instructions. It has two parts:
 
-- When the user has no `~/.pi/agent/AGENTS.md`, copy the file of the
-  repo.
-- When the user has one, combine the two. Read both files. Keep every
-  rule and every section of the user. Add the rules and the skills
-  table of the repo that the user does not already have. In the skills
-  table, keep only the rows of the skills that the user installed. When
-  two rules conflict, show the user both rules and let the user decide. The
-  content of the user is never dropped.
-- Show the user the combined file. Adopt it when the user approves.
+- **The harness part:** the sections "Subagents" and "Skills". These
+  sections tell the agent when to use each subagent and each skill. The
+  harness needs them.
+- **The working style:** the sections "Who you are working with" and
+  "How to work". These sections are the preferences of the author of the
+  harness. The harness works without them.
+
+Build the file for the user:
+
+1. If the user has a `~/.pi/agent/AGENTS.md`, start from that file. Keep
+   every rule and every section of the user. If the user has none, start
+   from an empty file.
+2. Add the harness part. In the "Skills" table, keep only the rows of
+   the skills that the user installed. If the user adopted the standards
+   alone, leave out "Subagents": the tasker agent comes with
+   pi-subagent-manager.
+3. Show the user the working style. Ask which rules the user wants. Add
+   only those rules.
+4. If a rule of the repo conflicts with a rule of the user, show the
+   user both rules. The user decides.
+5. Show the user the combined file. Adopt it when the user approves.
+
+The content of the user is never dropped.
 
 ## 4. Merge the settings (workflow only)
 

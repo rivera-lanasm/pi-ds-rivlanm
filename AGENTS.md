@@ -34,6 +34,8 @@ inferring. A smoothed-over gap costs more than an admitted one.
 whole file. Report what command output showed instead of pasting it. When
 exploration would flood the window, isolate it and bring back the conclusion.
 
+## Subagents
+
 **Send bounded work to tasker.** A menial job with a clear result that would
 eat the context window — extraction, mechanical edits, a few tool steps, a
 targeted lookup — goes to the tasker subagent. Give it the acceptance criteria.
